@@ -1,0 +1,138 @@
+---
+title: "Rap"
+author: "oggismetto"
+date: "4/14/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(tidytuesdayR)
+library(tidyverse)
+library(patchwork)
+library(hrbrthemes)
+
+theme_set(theme_light())
+
+rap_artist_full <- tt_load(2020, week = 16)
+polls <- rap_artist_full$polls
+rankings <- rap_artist_full$rankings
+```
+
+# Most voted rap years
+```{r}
+
+year_votes <- polls %>%
+    count(year, sort = TRUE) %>%
+    filter(n >10)
+    
+year_quality <- polls %>%
+    group_by(year) %>%
+    mutate(avg_rank = mean(rank))%>%
+    select(year, avg_rank) %>%
+  unique()
+
+year_votes_quality <- inner_join(year_votes,year_quality)
+
+p1 <- year_votes_quality %>%
+    ggplot(aes(year,n)) +
+    geom_point(aes(size = avg_rank), color = "turquoise", alpha = 0.6) +
+    geom_line(color = "orange", alpha = 0.6) +
+    coord_flip() +
+    labs(title = "Unforgettable rap years",
+         x = "",
+         y= "Number of votes",
+         size = "Average rank") +
+    hrbrthemes::theme_ft_rc()+ 
+  theme(plot.title = element_text(size=15))
+
+```
+
+Highest rated artist for >10 votes
+```{r}
+
+best_artist <- polls %>%
+  group_by(artist) %>%
+  select(artist, rank, title) %>%
+  mutate(avg_rank = mean(rank),
+         n = n()) %>%
+  filter(n > 10) %>%
+  select(artist, avg_rank) %>%
+  unique()
+ 
+
+nsongs <- polls %>%
+    group_by(artist) %>%
+    count(title) %>%
+    count(artist)
+
+best_artist_songs <- 
+  inner_join(best_artist, nsongs, by.x = artist, by.y = artist) 
+
+p2 <- best_artist_songs %>%
+    ggplot(aes(reorder(artist, -avg_rank), avg_rank)) +
+    geom_point(aes(size = n), color = "turquoise", alpha = 0.6) +
+    coord_flip() +
+    expand_limits(y = c(1,5)) +
+    labs(title = "Most loved artists", 
+         x = "",
+         y = "Average rank",
+         size = "N. of released songs") +
+    hrbrthemes::theme_ft_rc()+ 
+  theme(plot.title = element_text(size=15))
+
+Tidytuesday16_plot <- p1 + ( p2 )
+
+Tidytuesday16_plot + 
+  labs(caption = "by @GoldenB16117397 | source: #TidyTuesday | BBC") 
+```
+
+```{r full-panel-2, fig.width = 7, fig.height = 4}
+
+Tidytuesday16_plot
+ggsave(here::here("plots", "week_16", "2020_16_HiphopBBC.pdf"), 
+       width = 12, height = 5.5, device = cairo_pdf)
+
+```
+
+# Follow up
+
+```{r}
+
+year_quality <- polls %>%
+    group_by(year) %>%
+    mutate(avg_rank = mean(rank)) %>%
+    distinct(year, avg_rank)
+
+# png("/scratch/git/Tidytuesday/week16/week16_3rd.png", width = 7, height = 5, units = 'in', res = 300)
+
+Tidytuesday16_plot_followup <- year_quality  %>%
+    ggplot(aes(x = year, y = avg_rank))+
+    geom_point(color = "turquoise", alpha = 0.4, size = 2) +
+    geom_smooth(method = "lm", color = "yellow" ) +
+    labs(x = "", y = "Average Rank",
+         title = "Golden Times are gone?",
+         subtitle = "BBC Music Survey on the top 5 hip-hop tracks of all time",
+         caption = "by @GoldenB16117397 | source: #TidyTuesday | BBC") +
+    theme_ft_rc() +
+    expand_limits(y = c(1,5)) +  
+    scale_y_continuous(trans = "reverse") + 
+  theme(legend.position = "none")
+
+# dev.off()
+```
+
+```{r full-panel-2, fig.width = 7, fig.height = 4}
+
+Tidytuesday16_plot_followup
+ggsave(here::here("plots", "week_16", "2020_16_HiphopBBC_followup.pdf"), 
+       width = 12, height = 5.5, device = cairo_pdf)
+
+```
+
