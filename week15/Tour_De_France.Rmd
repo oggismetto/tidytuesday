@@ -10,25 +10,21 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, Prep the data, , include=FALSE, echo = FALSE}
+
 library(tidytuesdayR)
 library(tidyverse)
 
-#library(tidytext)
-#library(wordcloud)
 ```
 
 
 ```{r, Prep the data}
+
 tuesdata <- tidytuesdayR::tt_load(2020, week = 15)
 
 tdf_winners <-  
   tuesdata$tdf_winners
 
-
-png("/scratch/git/tidytuesday/week15/week15.png",
-    width = 7, height = 5, units = 'in', res = 300)
-
-tdf_winners %>%
+tdf_winners_plot <- tdf_winners %>%
     group_by(winner_team) %>%
     summarize(age = mean(age),
               n = n()) %>%
@@ -38,9 +34,17 @@ tdf_winners %>%
     geom_line(aes(y = age/2, group = 1)) +
     scale_y_continuous(sec.axis = sec_axis(~. *2, name = "Average age")) +
     coord_flip() +
-    labs(title = "What about the youngest and oldest most winning teams?", x = "",y = "number of won TDF") +
+    labs(title = "What about the youngest and oldest most winning teams?", 
+         x = "",
+         y = "number of won TDF") +
     theme_bw()
 
-dev.off()
 ```
 
+```{r full-panel-2, fig.width = 7, fig.height = 4}
+
+tdf_winners_plot
+ggsave(here::here("plots", "week_15", "09_04_2020_tdf_winners_plot.pdf"), 
+       width = 12, height = 5.5, device = cairo_pdf)
+
+```
