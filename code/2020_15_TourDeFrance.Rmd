@@ -43,8 +43,11 @@ tdf_winners_plot <- tdf_winners %>%
 
 ```{r full-panel-2, fig.width = 7, fig.height = 4}
 
-tdf_winners_plot
-ggsave(here::here("plots", "week_15", "09_04_2020_tdf_winners_plot.pdf"), 
-       width = 12, height = 5.5, device = cairo_pdf)
+#tdf_winners_plot
+#ggsave(here::here("plots", "week_15", "09_04_2020_tdf_winners_plot.pdf"), 
+#       width = 12, height = 5.5, device = cairo_pdf)
 
+png("/scratch/git/tidytuesday/plots/2020_15/15_2020_tdf_winners.png", width = 12, height = 5.5, units = 'in', res = 300)
+tdf_winners_plot
+dev.off()
 ```

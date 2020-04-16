@@ -95,9 +95,10 @@ Tidytuesday16_plot +
 
 ```{r full-panel-2, fig.width = 7, fig.height = 4}
 
+png("/scratch/git/tidytuesday/plots/2020_16/16_2020_HiphopBBC.png", 
+    width = 12, height = 5.5, units = 'in', res = 300)
 Tidytuesday16_plot
-ggsave(here::here("plots", "week_16", "2020_16_HiphopBBC.pdf"), 
-       width = 12, height = 5.5, device = cairo_pdf)
+dev.off()
 
 ```
 
@@ -130,9 +131,14 @@ Tidytuesday16_plot_followup <- year_quality  %>%
 
 ```{r full-panel-2, fig.width = 7, fig.height = 4}
 
+#Tidytuesday16_plot_followup
+#ggsave(here::here("plots", "week_16", "2020_16_HiphopBBC_followup.pdf"), 
+#       width = 12, height = 5.5, device = cairo_pdf)
+
+png("/scratch/git/tidytuesday/plots/2020_16/16_2020_HiphopBBC_followup.png", 
+    width = 12, height = 5.5, units = 'in', res = 300)
 Tidytuesday16_plot_followup
-ggsave(here::here("plots", "week_16", "2020_16_HiphopBBC_followup.pdf"), 
-       width = 12, height = 5.5, device = cairo_pdf)
+dev.off()
 
 ```
 
