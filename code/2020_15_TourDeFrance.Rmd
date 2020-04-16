@@ -1,0 +1,50 @@
+---
+title: "Tour_de_France_070420"
+author: "oggismetto"
+date: "4/7/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, Prep the data, , include=FALSE, echo = FALSE}
+
+library(tidytuesdayR)
+library(tidyverse)
+
+```
+
+
+```{r, Prep the data}
+
+tuesdata <- tidytuesdayR::tt_load(2020, week = 15)
+
+tdf_winners <-  
+  tuesdata$tdf_winners
+
+tdf_winners_plot <- tdf_winners %>%
+    group_by(winner_team) %>%
+    summarize(age = mean(age),
+              n = n()) %>%
+    filter(n > 5) %>%
+    ggplot(aes(x=reorder(winner_team,n), y = n, fill = winner_team)) +
+    geom_col(show.legend = FALSE) +
+    geom_line(aes(y = age/2, group = 1)) +
+    scale_y_continuous(sec.axis = sec_axis(~. *2, name = "Average age")) +
+    coord_flip() +
+    labs(title = "What about the youngest and oldest most winning teams?", 
+         x = "",
+         y = "number of won TDF") +
+    theme_bw()
+
+```
+
+```{r full-panel-2, fig.width = 7, fig.height = 4}
+
+tdf_winners_plot
+ggsave(here::here("plots", "week_15", "09_04_2020_tdf_winners_plot.pdf"), 
+       width = 12, height = 5.5, device = cairo_pdf)
+
+```
