@@ -1,4 +1,6 @@
-usethis::use_readme_rmd()
+---
+output: github_document
+---
 
 # Tidytuesday
 ## My weekly commits for the tidytuesday project
