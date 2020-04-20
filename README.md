@@ -1,7 +1,7 @@
 # tidytuesday
 ## my weekly commits for the tidytuesday project
 
-_Background_  
+__Background__  
 I've discovered this challenge during another challenge :) the #100DaysOfCode challenge. i've started during March 2020 quarantine for covid19. Hope one day will look back at these days and find a reason to smile and be happy about what i've accomplished.
 
 ### Year 2020 Episode 15: Tour de France
@@ -14,6 +14,11 @@ This was a cool one. All of us love music right? I enjoyed digging into this dat
 
 ![BBC - Survey - HipHop](plots/2020_16/16_2020_HiphopBBC.png)
 
+### Year 2020 Episode 16: BBC - Survey - HipHop - followup
+I was not satisfied with my plots. For several reasons:  
+* There are two plots and not one
+* I'm kind of tired to show in the same plot a lot of information. What do you want to accomplish? This is not a scientific paper. That's direct communication.
+* I didn't like the time on the y-axis, it makes it kind of weird
+So im showing here the main (obvious?) message extracted from the data.
 
-BBC - Survey - HipHop - followup
 ![BBC - Survey - HipHop - followup](plots/2020_16/16_2020_HiphopBBC_followup.png)
