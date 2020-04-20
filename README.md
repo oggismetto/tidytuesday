@@ -39,11 +39,13 @@ That’s embarassing but i’ve no idea about who Public Enemy is!!
 ### Year 2020 Episode 16: BBC - Survey - HipHop - followup
 
 I was not satisfied with my plots. For several reasons:  
-\* There are two plots and not one \* I’m kind of tired to show in the
-same plot a lot of information. What do you want to accomplish? This is
-not a scientific paper. That’s direct communication. \* I didn’t like
-the time on the y-axis, it makes it kind of weird So im showing here the
-main (obvious?) message extracted from the data.  
+- There are two plots and not one  
+- I’m kind of tired to show in the same plot a lot of information. What
+do you want to accomplish? This is not a scientific paper. That’s direct
+communication  
+- I didn’t like the time on the y-axis, it makes it kind of weird  
+So im showing here the main (obvious?) message extracted from the
+data.  
 **important**: I’ve read the code of i think about the ~80% of the
 \#tidytuesday plots i’ve seen. That was so instructive.
 
