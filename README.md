@@ -1,5 +1,5 @@
-# tidytuesday
-## my weekly commits for the tidytuesday project
+# Tidytuesday
+## My weekly commits for the tidytuesday project
 
 __Background__  
 I've discovered this challenge during another challenge :) the #100DaysOfCode challenge. i've started during March 2020 quarantine for covid19. Hope one day will look back at these days and find a reason to smile and be happy about what i've accomplished.
