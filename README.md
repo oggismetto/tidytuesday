@@ -1,5 +1,5 @@
 # Tidytuesday
-## My weekly commits for the tidytuesday project `r emo::ji("smile")`
+## My weekly commits for the tidytuesday project emo::ji("smile")
 I've discovered this challenge during another challenge :) the #100DaysOfCode challenge. i've started during March 2020 quarantine for covid19. Hope one day will look back at these days and find a reason to smile and be happy about what i've accomplished.
 
 ### Year 2020 Episode 15: Tour de France
