@@ -9,7 +9,26 @@ I’ve discovered this challenge during another challenge :) the
 \#100DaysOfCode challenge. i’ve started during March 2020 quarantine for
 covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
-the last one.
+the last one in time.
+
+### Year 2020 Episode 17: GDPR Fines
+
+It was not easy this one. I asked several questions. What was the
+distribution of the fine amounts. I had to use a logscale for this.
+After this, i was curious about what type of violations people/companies
+have been doing and i dig a bit into the type of violations and the
+related articles. I wish i could be a bit better with text manipulation
+but frankly speaking it’s only my 30th day of coding, i can’t pretend
+that much from myself. So i’ve used a cool function “cut” to divide the
+fine distribution into segment to see if any specific range was related
+to a specific type of violation or article violated. It was not,
+apparently. So i kind of give up and i came back on the most obvious
+plot: showing the violations by country (total amount of fines received
+and number of violations)
+
+![GDPR violations-1](plots/2020_17/17_2020_GDPR_1.png)
+
+![GDPR violations-2](plots/2020_17/17_2020_GDPR_2.png)
 
 ### Year 2020 Episode 16: BBC - Survey - HipHop - followup
 
