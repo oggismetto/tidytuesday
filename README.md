@@ -2,8 +2,8 @@
 Tidytuesday 😄
 =============
 
-My weekly commits for the tidytuesday project
----------------------------------------------
+My weekly commits for the tidytuesday project (<a href="https://github.com/rfordatascience/tidytuesday/" class="uri">https://github.com/rfordatascience/tidytuesday/</a>)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 I’ve discovered this challenge during another challenge :) the
 \#100DaysOfCode challenge. i’ve started during March 2020 quarantine for
