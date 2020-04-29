@@ -11,6 +11,12 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2020 Episode 18: Broadway
+
+i’ll tell you tomorrow..
+
+![Broadway](plots/2020_18/18_2020_Broadway.png)
+
 ### Year 2020 Episode 17: GDPR Fines
 
 It was not easy this one. I asked several questions. What was the
