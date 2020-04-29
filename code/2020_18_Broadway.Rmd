@@ -84,7 +84,7 @@ Broadway_plot <- by_year_show_plot %>%
   geom_text_repel(aes(label = year), data = by_year_show_plot_history) +
   labs(title = "The milestones of Broadway",
       subtitle = "A panorama of the most long lived shows in the land of musicals",
-       x = "Years from the first performance",
+       x = "Number of years the show has been performed",
        y = "Contribution over the total yearly gross (%)",
        color = "Show",
        caption = "by @GoldenB16117397 | source: #TidyTuesday | The Broadway League") +
