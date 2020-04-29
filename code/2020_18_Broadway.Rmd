@@ -1,0 +1,132 @@
+---
+title: "gdpr"
+author: "oggismetto"
+date: "21/04/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(tidyverse)
+library(patchwork)
+library(hrbrthemes)
+library(scales)
+library(ggrepel)
+library(tidytuesdayR)
+library(janitor)
+library(lubridate)
+library(cowplot)
+
+tuesdata <- tidytuesdayR::tt_load(2020, week = 18)
+
+# data cleaning
+grosses <- tuesdata$grosses %>%
+  select(-top_ticket_price, 
+         -potential_gross, -previews, -pct_capacity, -seats_in_theatre) %>%
+  mutate(theatre = str_remove(theatre, "Theatre.*"),
+         year = year(week_ending))
+
+theme_set(theme_light())
+```
+
+main idea
+* rank each show by year. replace year by sequential number
+* plot each show by out year
+* ratio of the earning per year of that show over all shows
+* x: years from year out
+
+```{r}
+
+by_show <-   grosses %>%
+  group_by(year, show) %>%
+  summarize(yearly_income_show = sum(weekly_gross)) %>%
+  ungroup() %>%
+    arrange(desc(yearly_income_show)) %>%
+    add_count(show, sort = T)
+
+by_year <-  grosses %>%
+  group_by(year) %>%
+  summarize(yearly_income = sum(unique(weekly_gross_overall))) %>%
+  ungroup()
+
+by_year_show <- merge(by_show, by_year)
+
+
+shows <- by_show %>%
+    distinct(show,n) %>%
+  head(10)
+
+shows <- shows$show
+
+by_year_show_plot <- by_year_show %>%
+  mutate(pct = (yearly_income_show/yearly_income)*100) %>%
+  group_by(show) %>%
+    mutate(rank = rank(year)) %>%
+#  group_by(year) %>%
+#  mutate(pct_sum = sum(pct)) %>%
+  filter(show %in% shows) %>%
+  ungroup()
+
+by_year_show_plot_history <- by_year_show_plot %>%
+    group_by(show) %>%
+    filter(year %in% c(min(year), max(year)))
+
+Broadway_plot <- by_year_show_plot %>%
+  ggplot(aes(rank, pct, group = show, color = show)) +
+  geom_line() +
+  geom_point() +
+  geom_text_repel(aes(label = year), data = by_year_show_plot_history) +
+  labs(title = "The milestones of Broadway",
+      subtitle = "A panorama of the most long lived shows in the land of musicals",
+       x = "Years from the first performance",
+       y = "Contribution over the total yearly gross (%)",
+       color = "Show",
+       caption = "by @GoldenB16117397 | source: #TidyTuesday | The Broadway League") +
+  theme_ft_rc()
+
+
+Broadway_plot_joined <- ggdraw() +
+  draw_plot(Broadway_plot) +
+    draw_image("https://raw.githubusercontent.com/oggismetto/tidytuesday/master/other/phantom.jpg", x = 0.18, y = 0.2, scale = .2)
+
+
+png("/scratch/git/tidytuesday/plots/2020_18/18_2020_Broadway.png", 
+    width = 14, height = 7, units = 'in', res = 300)
+Broadway_plot_joined
+dev.off()
+
+```
+
+# exploratory analyses
+
+```{r}
+
+# theatre 
+grosses %>%
+  count(theatre, sort = T) %>%
+  ggplot() +
+  geom_col (aes(reorder(theatre,n), n)) +
+  coord_flip()
+
+# shows
+grosses %>%
+  group_by(show, year) %>%
+  summarize (year_income = sum(weekly_gross)) %>%
+  filter(year != "2020") %>%
+  count(show, wt = year_income, sort = T) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(n, reorder(show,n))) +
+  theme_ft_rc() +
+  scale_x_continuous(labels = dollar_format()) +
+  labs(title = "The shows that earned the most?",
+       x = "",
+       y = "")
+```
+
