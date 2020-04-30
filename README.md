@@ -13,8 +13,9 @@ the last one in time.
 
 ### Year 2020 Episode 18: Broadway
 
-i’ll tell you tomorrow…
+![Broadway](plots/2020_18/18_2020_Broadway_fu.png)
 
+not satisfied with this plot.
 ![Broadway](plots/2020_18/18_2020_Broadway.png)
 
 ### Year 2020 Episode 17: GDPR Fines
