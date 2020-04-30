@@ -103,30 +103,39 @@ dev.off()
 
 ```
 
-# exploratory analyses
+* number of seats sold
 
 ```{r}
 
-# theatre 
-grosses %>%
-  count(theatre, sort = T) %>%
-  ggplot() +
-  geom_col (aes(reorder(theatre,n), n)) +
-  coord_flip()
+by_ticket <- grosses %>%
+  group_by(year, show) %>%
+  summarize(avg_ticket_price = mean(avg_ticket_price))
 
-# shows
-grosses %>%
-  group_by(show, year) %>%
-  summarize (year_income = sum(weekly_gross)) %>%
-  filter(year != "2020") %>%
-  count(show, wt = year_income, sort = T) %>%
-  head(10) %>%
+by_seats <- grosses %>%
+  group_by(year, show) %>%
+  add_count(show, wt = seats_sold, sort = T) %>%
+  distinct(year, show, n)
+
+by_ticket_seats <- merge(by_ticket, by_seats)
+
+seats_sold_plot <- by_ticket_seats %>% 
+  group_by(year) %>%
+  filter(n == max(n),
+         !year %in% c("1985","2020")) %>%
   ggplot() +
-  geom_col(aes(n, reorder(show,n))) +
+  geom_area(aes(x = year, y = n/10000), color = "steelblue", alpha = 0.4) +
+  geom_point(aes(x = year, y = avg_ticket_price), color = "orange", size = 3) +
+  geom_text_repel(aes(x = year, y = avg_ticket_price, label = show), color = "white") +
+  scale_y_continuous(sec.axis = sec_axis(~. *1, name = "Average ticket price", labels = dollar_format())) +
   theme_ft_rc() +
-  scale_x_continuous(labels = dollar_format()) +
-  labs(title = "The shows that earned the most?",
-       x = "",
-       y = "")
+  labs(title = "Shows with the most seats sold per year and their average price",
+       y = "Number of tickets sold every 10K people",
+       caption = "by @GoldenB16117397 | source: #TidyTuesday | The Broadway League")
+
+png("/scratch/git/tidytuesday/plots/2020_18/18_2020_Broadway_fu.png", 
+    width = 14, height = 7, units = 'in', res = 300)
+seats_sold_plot
+dev.off()
 ```
+
 
