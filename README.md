@@ -18,22 +18,22 @@ interesting until i came up with this plot.. Still have to figure out
 why the months are in italian.. and why i couldnt’ set the x\_limits
 properly…
 
-![Broadway](plots/2020_19/animal_crossing.png)
+![Animal Crossing](plots/2020_19/animal_crossing.png)
 
 ### Year 2020 Episode 18: Broadway
 
 For this episode i was quite thrilled to explore the dataset and learn
 new things about Broadway. Havent been so far in NY but its on the
-todolist. *plot2*: Here I plotted some the top 10 long-lived shows in
-Broadway and their contribution to the main Broadway theatre income. I
-have to admit that the output is a bit boring as, apart from the
-legendary “The phanthom of the opera” and “The Lion King” , i didn’t
-learn much of new data. I was interested in exploring the revenue trend
-of each show. Ill not repeat it. *plot1*: I was curious to investigate
-instead the trend in the number of seats sold. Boringly, i’ve seen is
-quite stable for the shows that had the most number of seats sold. The
-average price is not corrected for inflation, will learn it in the next
-episode.
+todolist. *plot1*: I was curious to investigate instead the trend in the
+number of seats sold. Boringly, i’ve seen is quite stable for the shows
+that had the most number of seats sold. The average price is not
+corrected for inflation, will learn it in the next episode. *plot2*:
+Here I plotted some the top 10 long-lived shows in Broadway and their
+contribution to the main Broadway theatre income. I have to admit that
+the output is a bit boring as, apart from the legendary “The phanthom of
+the opera” and “The Lion King” , i didn’t learn much of new data. I was
+interested in exploring the revenue trend of each show. Ill not repeat
+it.
 
 ![Broadway](plots/2020_18/18_2020_Broadway_fu.png)
 
