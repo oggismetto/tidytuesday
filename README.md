@@ -16,7 +16,7 @@ the last one in time.
 For this episode i’ve explored quite a lot trying to find something
 interesting until i came up with this plot.. Still have to figure out
 why the months are in italian.. and why i couldnt’ set the x\_limits
-properly..
+properly…
 
 ![Broadway](plots/2020_19/animal_crossing.png)
 
