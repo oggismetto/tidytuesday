@@ -1,0 +1,191 @@
+---
+title: "Animal Crossing"
+author: "oggismetto"
+date: "05/05/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(tidyverse)
+library(patchwork)
+library(hrbrthemes)
+library(scales)
+library(ggrepel)
+library(tidytuesdayR)
+library(janitor)
+library(lubridate)
+library(cowplot)
+library(rvest)
+# Get the Data
+
+# critic <- readr::read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-05/critic.tsv')
+# user_reviews <- readr::read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-05/user_reviews.tsv')
+items <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-05/items.csv')
+villagers <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-05/villagers.csv')
+
+# rm (critic, user_reviews)
+
+theme_set(theme_minimal())
+```
+
+* idea: 30 days the year 2 people can have a party together cause they share the birthday. So they could also change their personalities organizing parties? Do this correlate to the animal?
+
+```{r}
+
+
+villagers_of_interest <- villagers %>%
+    count(birthday) %>%
+    filter(n == "2") %>%
+    inner_join(villagers) %>%
+    select(birthday, name, gender, species, personality, phrase, url) %>%
+    mutate(new = paste0(name, " the ", personality)) %>%
+    select(birthday, new, personality)
+
+
+```
+
+Extract and Scraping the personalities
+```{r}
+
+personalities <- villagers %>%
+    count(birthday) %>%
+    filter(n == "2") %>%
+    inner_join(villagers) %>%
+    select(personality) %>%
+  unique()
+
+personalities <- as.vector(personalities$personality)
+
+# scraping from web
+output <- list()
+
+for (i in personalities) {
+  output[[i]] <- xml2::read_html(paste0("https://acnewleaf.fandom.com/wiki/", i))
+  output[[i]] <- output[[i]]%>%
+    html_nodes("p") %>%
+    html_text() %>%
+    head(1) %>%
+    str_remove("\n")
+}
+
+Personality_table <- pivot_longer(as.data.frame(output), cols = 1:8, 
+                     names_to = "personality", 
+                     values_to = "description") %>%    
+  mutate(description = str_split(description, "\\.")) %>%
+  unnest() %>% group_by(personality) %>%
+  filter(row_number() == 2) %>%
+  select(personality, description) %>%
+    separate(description, into = c("label", "rest"), sep =  "and") %>%
+    select(1:2) %>%
+    separate(label, into = c("not", "important"), sep = "are") %>%
+    select(1,3) %>%
+    separate(important, into = c("label", "rest"), sep = ",") %>%
+  select(1:2)
+
+```
+
+```{r}
+
+# give a rank
+Personality_table <- Personality_table %>%
+    mutate(rank = ifelse(personality %in% c("cranky"), 1,0)) %>%
+    mutate(rank = ifelse(personality %in% c("uchi","smug", "peppy"), 10, rank)) %>%
+    mutate(rank = ifelse(personality %in% c("jock","normal"), 5, rank)) %>%
+    mutate(rank = ifelse(personality %in% c("lazy"), 6, rank)) %>%
+    mutate(rank = ifelse(personality == "snooty", 3, rank))
+```
+
+merge
+
+```{r}
+villagers_common_birthday <- merge(villagers_of_interest, Personality_table)
+
+villagers_common_birthday_pairs <- merge(villagers_common_birthday, villagers_common_birthday, by = "birthday") %>%
+    group_by(birthday) %>%
+    filter(row_number() == 2)%>%
+  ungroup() %>%
+  mutate(birthday = paste0(birthday,"-2020")) %>%
+  mutate(birthday = mdy(birthday))
+
+
+plot <- villagers_common_birthday_pairs %>%
+  transmute(birthday = birthday,
+            villager1 = new.x,
+            villager2 = new.y,
+            prob = rank.x*rank.y,
+            label = paste0(villager1," & ",villager2))
+
+plot <- plot %>%
+    ggplot(aes(x = birthday, y = prob)) +
+    geom_point(color = "yellow") +
+    geom_line() +
+  geom_label_repel(data = plot %>%
+                    filter(prob > 55 | prob < 2) %>%
+                     filter(label != "Monty the cranky & Buzz the cranky"),
+                  aes(label = label), nudge_y = 1, color = "black") +
+  theme_ft_rc() +
+  annotate("text", x=ymd("2020-03-15"), y=65, 
+           label= "cranky: irritated easily by the other villagers \n smug: very polite \n jock: loud \n uchi: very caring \n normal: very neutral \n snooty: the most arrogant of the female personality types \n peppy: quite energetic \n lazy: quite laidback", color = "white")+
+  labs(title = "Joint birthday parties in Crossing Animals",
+      subtitle = "Thirty villagers have their birthdays shared with another villager, but are they gonna have a joint party??",
+       x = "",
+       y = "Probability of party happenning (%)",
+       caption = "by @GoldenB16117397 | source: #TidyTuesday | Crossing Animals") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B")+
+  theme(axis.text.x = element_text(angle=45)) +
+  expand_limits(y = c(0,85), x = c(2020-01-01, 2020-12-30))
+
+
+Animal_crossing <- ggdraw() +
+  draw_plot(plot) +
+    draw_image("https://villagerdb.com/images/villagers/thumb/rex.33d6f95.png", x = -0.06, y = 0.27, scale = .15)+
+    draw_image("https://villagerdb.com/images/villagers/thumb/ohare.22607f6.png", x = -0.01, y = 0.27, scale = .15)+
+    draw_image("https://villagerdb.com/images/villagers/thumb/erik.634470d.png", x = 0.11, y = 0.27, scale = .15)+
+    draw_image("https://villagerdb.com/images/villagers/thumb/ketchup.6a5bfd7.png", x = 0.16, y = 0.27, scale = .15)+
+    draw_image("https://villagerdb.com/images/villagers/thumb/vic.a5af25f.png", x = 0.4, y = -0.1, scale = .15)+
+    draw_image("https://villagerdb.com/images/villagers/thumb/murphy.b159459.png", x = 0.45, y = -0.1, scale = .15)
+
+
+png("/scratch/git/tidytuesday/plots/2020_19/animal_crossing.png", 
+    width = 14, height = 7, units = 'in', res = 300)
+Animal_crossing
+dev.off()
+```
+
+# Extra analyses
+* how to women and men survive in an island? what do they buy/collect?
+* Explore prices
+```{r}
+
+# distributions between buy and sell
+items %>%
+  select(buy_value, sell_value) %>%
+  gather() %>%
+  ggplot() +
+  geom_density(aes(x = value, fill = key, ..count..)) +
+  scale_x_log10(labels = comma_format(), breaks = c(10, 100, 1000, 10000,100000,1000000)) +
+  labs(title = "How does it work ?",
+      subtitle = "Prices are expressed in 'bells', the sell currency in New Horizons",
+       x = "bells") +
+  expand_limits(x = c(0,10^6))
+
+# buy. items
+items %>%
+  filter(!is.na(buy_value)) %>%
+  mutate(category = fct_lump(category, 6)) %>% # >100
+  ggplot() +
+  geom_histogram(aes(x = buy_value, fill = category), binwidth = 0.1) +
+  labs(title = "What categories cost the most",
+      subtitle = "Prices are expressed in 'bells', the sell currency in New Horizons",
+       x = "bells") +
+  scale_x_log10(labels = comma_format(), breaks = c(10, 100, 1000, 10000,100000,1000000))
+
+```
+
