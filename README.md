@@ -14,9 +14,9 @@ the last one in time.
 ### Year 2020 Episode 19: Animal Crossing - New Horizons
 
 For this episode i’ve explored quite a lot trying to find something
-interesting until i came up with this plot.. Still have to figure out
-why the months are in italian.. and why i couldnt’ set the x\_limits
-properly…
+interesting until i came up with this plot… Still have to figure out why
+the months are in italian.. and why i couldnt’ set the x\_limits
+properly….
 
 ![Animal Crossing](plots/2020_19/animal_crossing.png)
 
