@@ -127,8 +127,8 @@ plot <- plot_data %>%
   theme_ft_rc() +
   annotate("text", x=ymd("2020-03-15"), y=65, 
            label= "cranky: irritated easily by the other villagers \n smug: very polite \n jock: loud \n uchi: very caring \n normal: very neutral \n snooty: the most arrogant of the female personality types \n peppy: quite energetic \n lazy: quite laidback", color = "white")+
-  labs(title = "Joint birthday parties in Crossing Animals",
-      subtitle = "Thirty villagers have a common birthday with another villager.. But are they going to share a party, too???",
+  labs(title = "Joint birthday parties in Animal Crossing",
+      subtitle = "Sixty villagers have a common birthday with another villager.. But are they going to share a party, too???",
        x = "",
        y = "Probability of party happenning (%)",
        caption = "by @GoldenB16117397 | source: #TidyTuesday | Crossing Animals") +
