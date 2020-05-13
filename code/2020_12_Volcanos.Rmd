@@ -1,0 +1,90 @@
+---
+title: "Etna eruptions"
+author: "oggismetto"
+date: "05/05/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(patchwork)
+library(hrbrthemes)
+library(scales)
+library(ggrepel)
+library(tidytuesdayR)
+library(janitor)
+library(lubridate)
+library(cowplot)
+library(rvest)
+library(here)
+
+tuesdata <- tidytuesdayR::tt_load(2020, week = 20)
+volcano <- tuesdata$volcano
+eruptions <- tuesdata$eruptions
+events <- tuesdata$events
+```
+
+
+```{r}
+
+p1 <- eruptions %>%
+    count(volcano_name, sort = T) %>%
+    top_n(10) %>%
+    ggplot(aes(x = n, y = reorder(volcano_name,n))) +
+    geom_col(fill = "#EDD9A3") +
+#    viridis::scale_fill_viridis(option = 'magma')  + 
+  hrbrthemes::theme_ft_rc() +
+    theme(legend.position = "none") +
+  labs(title = "Most active volcanos (top 10)",
+       x = "Number of eruptions",
+       y ="")
+
+p2 <- eruptions %>%
+    filter(volcano_name == "Etna") %>%
+    select(vei, end_year) %>%
+    filter(end_year > 1900) %>%
+    ggplot(aes(x = end_year, y = vei)) +
+    stat_density_2d(aes(fill = ..density..),
+                    geom = "raster", contour = FALSE) +
+    viridis::scale_fill_viridis('Density of eruptions \n at that VEI',option = 'magma')  + hrbrthemes::theme_ft_rc() +
+    xlab('Year') +
+    ylab('Volcano Explosivity Index (VEI, 1 to 8 scale)') +
+    labs(title = "Explosivity of Etna eruptions since the 20th century") +
+  labs(caption = "by @GoldenB16117397 | source: #TidyTuesday | The Smithsonian Institution")
+   
+
+png(here("plots","2020_20", "Volcano_Eruptions.png"), 
+    width = 14, height = 6, units = 'in', res = 300)
+
+p1 + p2 + 
+    plot_layout(widths = c(1.1, 1)) 
+
+dev.off()
+
+```
+
+# Other exploratory analyses
+
+```{r}
+
+# height
+volcano %>%
+    group_by(region) %>%
+    ggplot(aes(x = region, y = elevation)) +
+    geom_boxplot(aes(fill = region)) +
+    coord_flip() +
+    geom_jitter() +
+    theme_minimal() +
+    labs(title = "Volcano height, South America wins") +
+    theme(legend.position = "none")
+
+```
