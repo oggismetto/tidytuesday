@@ -63,7 +63,7 @@ p2 <- eruptions %>%
    
 
 png(here("plots","2020_20", "Volcano_Eruptions.png"), 
-    width = 14, height = 6, units = 'in', res = 300)
+    width = 17, height = 6, units = 'in', res = 300)
 
 p1 + p2 + 
     plot_layout(widths = c(1.1, 1)) 
