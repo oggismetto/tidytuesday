@@ -36,7 +36,11 @@ events <- tuesdata$events
 
 ```{r}
 
-p1 <- eruptions %>%
+p1 <- volcano %>%
+    inner_join(eruptions) %>%
+    select(volcano_name, eruption_number, country) %>%
+    mutate(volcano_name = paste0(volcano_name, " (",country,")")) %>%
+distinct() %>%
     count(volcano_name, sort = T) %>%
     top_n(10) %>%
     ggplot(aes(x = n, y = reorder(volcano_name,n))) +
@@ -63,7 +67,7 @@ p2 <- eruptions %>%
    
 
 png(here("plots","2020_20", "Volcano_Eruptions.png"), 
-    width = 17, height = 6, units = 'in', res = 300)
+    width = 18, height = 6, units = 'in', res = 300)
 
 p1 + p2 + 
     plot_layout(widths = c(1.1, 1)) 
