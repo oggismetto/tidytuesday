@@ -13,6 +13,10 @@ the last one in time.
 
 ### Year 2020 Episode 21: Beach volleyball
 
+For this tidytuesday i really enjoyed learning the basics of ggraph. I
+was curious of how many players changed their partners during their
+career and their winning rate.
+
 ![Volcano Eruptions](plots/2020_21/beach_volleyball.png)
 
 ### Year 2020 Episode 20: Volcano Eruptions
