@@ -11,15 +11,19 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
-### Year 2020 Episode 20: Volcao Eruptions
+### Year 2020 Episode 21: Beach volleyball
+
+![Volcano Eruptions](plots/2020_21/beach_volleyball.png)
+
+### Year 2020 Episode 20: Volcano Eruptions
 
 For this episode i really wanted to learn a new thing. Of course I ended
 up with a *magma* option from the viridis package in a density plot type
 raster. Looks nice and not so many efforts. Etna is the most active
 volcano in the world and i’ve been there.. It looks like a parallel
-universe.
+universe. What i’ve learned:
 
-![Animal Crossing](plots/2020_20/Volcano_Eruptions.png)
+![Volcano Eruptions](plots/2020_20/Volcano_Eruptions.png)
 
 ### Year 2020 Episode 19: Animal Crossing - New Horizons
 

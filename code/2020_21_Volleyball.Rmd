@@ -1,0 +1,226 @@
+---
+title: "Volleyball"
+author: "oggismetto"
+date: "20/05/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(patchwork)
+library(hrbrthemes)
+library(tidytuesdayR)
+library(here)
+
+tuesdata <- tidytuesdayR::tt_load(2020, week = 21)
+volley <- tuesdata$vb_matches %>%
+    mutate(match_id = row_number())
+
+
+```
+
+* im gonna train with pivot_longer to long format this table
+* gonna count the players in the world
+* can be a network of players who played together and how many victories / defeats?
+* this is biased by the huge number of brazilian players i bet
+* im gonna show relative numbers to avoid confounding
+
+```{r}
+
+volley_long <- volley %>%
+  rename(w_p1_name = w_player1, w_p2_name = w_player2,
+         l_p1_name = l_player1, l_p2_name = l_player2) %>%
+mutate_at(vars(starts_with("w_"), starts_with("l_")), as.character) %>%
+  pivot_longer(cols = c(starts_with("w_"), starts_with("l_"))) %>%
+  separate(name, c("winner_loser", "player", "name"),
+           sep = "_",
+           extra = "merge",
+           fill = "right") %>%
+  mutate(winner_loser = str_to_upper(winner_loser))
+  
+volley_players  <- volley_long %>%
+  filter(name != "rank") %>% 
+  spread(name, value) %>%
+  select(name, country, gender)
+
+```
+
+Pair stats
+
+```{r}
+
+  
+losers <-  volley %>%
+    select(gender, match_id, l_player1, l_player2, l_p1_country, l_p2_country) %>%
+    mutate(label = "losers") %>%
+  rename(player1 = l_player1, player2 = l_player2,
+         country1 = l_p1_country, country2 = l_p2_country)
+
+winners <-  volley %>%
+    select(gender, match_id, w_player1, w_player2, w_p1_country, w_p2_country) %>%
+    mutate(label = "winners") %>%
+  rename(player1 = w_player1, player2 = w_player2,
+         country1 = w_p1_country, country2 = w_p2_country)
+
+by_pairs <- rbind(losers, winners) %>%
+    select(-match_id) %>%
+    count(player1, player2, label, country1, country2, gender) %>%
+    spread(label, n) %>%
+  filter(losers + winners > 100) %>%
+  mutate(ratio_wins = winners/(winners + losers))
+
+```
+
+Single Winner stats (filter for the genes in the pairs)
+```{r}
+
+winners <-volley %>%
+    pivot_longer(cols = c(w_player1, w_player2),  
+                 names_to = "Player", 
+                 values_to = "Name") %>%
+  select(Player, Name) %>%
+  count(Name, sort = T)
+
+losers <-volley %>%
+    pivot_longer(cols = c(l_player1, l_player2),  
+                 names_to = "Player", 
+                 values_to = "Name") %>%
+  select(Player, Name) %>%
+  count(Name, sort = T)
+
+winner_stats <- winners %>%
+    merge(losers, by = "Name") %>%
+    rename(n_wins = n.x, n_loss = n.y) %>%
+    mutate(n_matches = n_wins + n_loss,
+           ratio_wins = n_wins/n_matches) %>%
+    arrange(desc(ratio_wins)) %>%
+  filter(n_matches > 100)
+
+winner_stats <- 
+  merge (winner_stats, volley_players, by.x = "Name", by.y = "name", all.x = TRUE) %>%
+  distinct()
+
+```
+
+* lets learn how to use ggraph
+
+```{r}
+
+library("igraph")
+library("graphlayouts")
+library("ggraph")
+
+# https://kateto.net/network-visualization
+
+by_pairs %>%
+  count(country2, sort = T)
+
+links2 <- by_pairs %>%
+  filter(country1 == c("United States")) %>%
+  mutate(ratio_wins = ratio_wins * 100) %>%
+  select(player1, player2, ratio_wins, gender, country1) %>%
+  rename(from = player1, to = player2, `Pair winning rate (%)` = ratio_wins, country = country1)
+
+uno <- links2 %>%
+  select(from) %>%
+  rename(player = from)
+
+due <- links2 %>%
+  select(to) %>%
+  rename(player = to)
+
+link_nodes <- rbind(uno, due)
+
+nodes2 <- winner_stats %>%
+    select(Name, ratio_wins, gender, country) %>%
+  merge(link_nodes, by.x = "Name", by.y = "player", all.y = TRUE) %>%
+  distinct()
+
+#net <- graph_from_data_frame(d=links2 %>% filter(gender == "M"), 
+#                             vertices=nodes2 %>% filter(gender == "M"), directed=F) 
+#
+net <- graph_from_data_frame(d=links2, vertices=nodes2, directed=F) 
+
+# ggraph
+# http://users.dimi.uniud.it/~massimo.franceschet/ns/syllabus/make/ggraph/ggraph.html
+
+lay = create_layout(net, layout = "fr")
+
+# New facet label names for dose variable
+facet_labs <- c("Men connect with a density of 4.27%", "Women connect with a density of 3.53%")
+names(facet_labs) <- c("M", "W")
+
+bvolley <- ggraph(lay) + 
+    geom_edge_link(aes(edge_color= `Pair winning rate (%)`), edge_width = 2) + 
+    geom_node_text(aes(label = name), repel=TRUE)+ 
+    geom_node_point(aes(color = gender, size = ratio_wins * 100)) +
+    theme_graph() +
+  facet_nodes(~gender, nrow = 3, ncol = 2, labeller = labeller(gender = facet_labs)) + 
+    th_foreground(foreground = 'grey', border = TRUE) +
+  labs(title = "American beach volleyball players, how much do they connect?",
+      subtitle = "Single player and pair winning rate", 
+       size = "Single player\nwinning rate (%)",
+       colour = "Gender",
+       caption = "by @GoldenB16117397 | source: #TidyTuesday/BigTimeStats | Beach Volleyball")
+
+png(here("plots","2020_21", "beach_volleyball.png"), 
+    width = 14, height = 8, units = 'in', res = 300)
+bvolley
+dev.off()
+
+
+# igraph
+plot(net,
+     vertex.size = (V(net)$ratio_wins*2)^4, 
+     edge.width = (E(net)$weight * 2)^4)
+
+plot(net)
+
+```
+
+* new idea, analyse general connectivity between man and women of the same state
+* top 3 countries per number of players
+
+density analysis
+```{r}
+
+# Brazil - M
+PC = 17*16/2 = 136
+AC = 15
+density = 15/136 = 0.1102941
+
+# US - M
+PC = 41*40/2 = 820
+AC = 35
+density = 35/820 = 0.04268293
+
+# Brazil - W
+PC = 19*18/2 = 171
+AC = 16
+density = 16/171 = 0.09356725
+
+# US - W
+PC = 45*44/2 = 990
+AC = 35
+density = 35/990 = 0.03535354
+
+# check the stats
+
+# Germany - M
+PC = 16*15/2 = 120
+AC = 12
+density = 12/120 = 0.1
+
+# Germany - W
+PC = 25*24/2 = 300
+AC = 14
+density = 14/300 = 0.04666667
+
+```
+
+
