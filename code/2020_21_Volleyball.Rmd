@@ -163,7 +163,7 @@ bvolley <- ggraph(lay) +
   facet_nodes(~gender, nrow = 3, ncol = 2, labeller = labeller(gender = facet_labs)) + 
     th_foreground(foreground = 'grey', border = TRUE) +
   labs(title = "American beach volleyball players, how much do they connect?",
-      subtitle = "Single player and pair winning rate", 
+      subtitle = "Network of players and their winning rates in pairs and as individuals", 
        size = "Single player\nwinning rate (%)",
        colour = "Gender",
        caption = "by @GoldenB16117397 | source: #TidyTuesday/BigTimeStats | Beach Volleyball")
@@ -174,7 +174,7 @@ bvolley
 dev.off()
 
 
-# igraph
+# learn with igraph
 plot(net,
      vertex.size = (V(net)$ratio_wins*2)^4, 
      edge.width = (E(net)$weight * 2)^4)
