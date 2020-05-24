@@ -12,8 +12,6 @@ editor_options:
 Sys.setlocale("LC_TIME", "en_US.UTF-8")
 
 library(tidyverse)
-library(patchwork)
-library(hrbrthemes)
 library(tidytuesdayR)
 library(here)
 
@@ -21,14 +19,11 @@ tuesdata <- tidytuesdayR::tt_load(2020, week = 21)
 volley <- tuesdata$vb_matches %>%
     mutate(match_id = row_number())
 
-
 ```
 
-* im gonna train with pivot_longer to long format this table
-* gonna count the players in the world
-* can be a network of players who played together and how many victories / defeats?
-* this is biased by the huge number of brazilian players i bet
-* im gonna show relative numbers to avoid confounding
+* can be a network of players who played together and how many victories/defeats?
+
+Create a long format table indexing each player (from Dave Robinson screencast, https://www.youtube.com/watch?v=MfDdmsW3OMo&t=1247s)
 
 ```{r}
 
@@ -50,7 +45,7 @@ volley_players  <- volley_long %>%
 
 ```
 
-Pair stats
+Compute Pair stats
 
 ```{r}
 
@@ -76,7 +71,8 @@ by_pairs <- rbind(losers, winners) %>%
 
 ```
 
-Single Winner stats (filter for the genes in the pairs)
+Single Player stats (and filter for the genes in the pairs)
+
 ```{r}
 
 winners <-volley %>%
@@ -101,8 +97,10 @@ winner_stats <- winners %>%
     arrange(desc(ratio_wins)) %>%
   filter(n_matches > 100)
 
+# add country and gender
 winner_stats <- 
-  merge (winner_stats, volley_players, by.x = "Name", by.y = "name", all.x = TRUE) %>%
+  merge (winner_stats, volley_players, 
+         by.x = "Name", by.y = "name", all.x = TRUE) %>%
   distinct()
 
 ```
@@ -115,46 +113,50 @@ library("igraph")
 library("graphlayouts")
 library("ggraph")
 
-# https://kateto.net/network-visualization
+# https://kateto.net/network-visualization (checked)
+# http://users.dimi.uniud.it/~massimo.franceschet/ns/syllabus/make/ggraph/ggraph.html (used)
 
+
+# Which country should i focus on? The one with the highest number of players
 by_pairs %>%
   count(country2, sort = T)
 
 links2 <- by_pairs %>%
-  filter(country1 == c("United States")) %>%
+  filter(country1 == "United States",
+         country2 == "United States") %>%
   mutate(ratio_wins = ratio_wins * 100) %>%
   select(player1, player2, ratio_wins, gender, country1) %>%
   rename(from = player1, to = player2, `Pair winning rate (%)` = ratio_wins, country = country1)
 
-uno <- links2 %>%
+# List of Player nodes to filter
+first_col <- links2 %>%
   select(from) %>%
   rename(player = from)
 
-due <- links2 %>%
+second_col <- links2 %>%
   select(to) %>%
   rename(player = to)
 
-link_nodes <- rbind(uno, due)
+link_nodes <- rbind(first_col, second_col)
 
+# filter for USA players
 nodes2 <- winner_stats %>%
     select(Name, ratio_wins, gender, country) %>%
   merge(link_nodes, by.x = "Name", by.y = "player", all.y = TRUE) %>%
   distinct()
 
-#net <- graph_from_data_frame(d=links2 %>% filter(gender == "M"), 
-#                             vertices=nodes2 %>% filter(gender == "M"), directed=F) 
-#
+# first possibility
+# net <- graph_from_data_frame(d=links2 %>% filter(gender == "M"), vertices=nodes2 %>% filter(gender == "M"), directed=F) 
+
+# second possibility
 net <- graph_from_data_frame(d=links2, vertices=nodes2, directed=F) 
-
-# ggraph
-# http://users.dimi.uniud.it/~massimo.franceschet/ns/syllabus/make/ggraph/ggraph.html
-
 lay = create_layout(net, layout = "fr")
 
-# New facet label names for dose variable
+# Change the facet label names to add density information (see below in the last chunk how to calculate it)
 facet_labs <- c("Men connect with a density of 4.27%", "Women connect with a density of 3.53%")
 names(facet_labs) <- c("M", "W")
 
+# Plot the graph
 bvolley <- ggraph(lay) + 
     geom_edge_link(aes(edge_color= `Pair winning rate (%)`), edge_width = 2) + 
     geom_node_text(aes(label = name), repel=TRUE)+ 
@@ -173,21 +175,16 @@ png(here("plots","2020_21", "beach_volleyball.png"),
 bvolley
 dev.off()
 
-
-# learn with igraph
-plot(net,
-     vertex.size = (V(net)$ratio_wins*2)^4, 
-     edge.width = (E(net)$weight * 2)^4)
-
-plot(net)
-
 ```
 
-* new idea, analyse general connectivity between man and women of the same state
+* new idea, analyse density of men and women networks of the same state
 * top 3 countries per number of players
 
-density analysis
+Density analysis
 ```{r}
+# Potential connections (PC) = (#nodes*#nodes-1)/2
+# Actual connections (AC)
+# Density = Actual connections/ Potential Connections
 
 # Brazil - M
 PC = 17*16/2 = 136

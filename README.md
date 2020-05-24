@@ -15,7 +15,9 @@ the last one in time.
 
 For this tidytuesday i really enjoyed learning the basics of ggraph. I
 was curious of how many players changed their partners during their
-career and their winning rate.
+career and their winning rate. What i’ve learned in this episode: \* how
+to tidy a wide format table with pivot\_longer(), separate(), and
+spread(). \* how to prepare data and plot a network with ggraph()
 
 ![Volcano Eruptions](plots/2020_21/beach_volleyball.png)
 
@@ -25,7 +27,7 @@ For this episode i really wanted to learn a new thing. Of course I ended
 up with a *magma* option from the viridis package in a density plot type
 raster. Looks nice and not so many efforts. Etna is the most active
 volcano in the world and i’ve been there.. It looks like a parallel
-universe. What i’ve learned:
+universe. What i’ve learned: \* how to prepare a raster density plot
 
 ![Volcano Eruptions](plots/2020_20/Volcano_Eruptions.png)
 
