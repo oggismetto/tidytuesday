@@ -71,7 +71,7 @@ by_pairs <- rbind(losers, winners) %>%
 
 ```
 
-Single Player stats (and filter for the genes in the pairs)
+Single Player stats
 
 ```{r}
 
