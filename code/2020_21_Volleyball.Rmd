@@ -168,7 +168,8 @@ bvolley <- ggraph(lay) +
       subtitle = "Network of players and their winning rates in pairs and as individuals", 
        size = "Single player\nwinning rate (%)",
        colour = "Gender",
-       caption = "by @GoldenB16117397 | source: #TidyTuesday/BigTimeStats | Beach Volleyball")
+       caption = "by @GoldenB16117397 | source: #TidyTuesday/BigTimeStats | Beach Volleyball")+
+    scale_edge_color_continuous(low = "cyan",high = "red")
 
 png(here("plots","2020_21", "beach_volleyball.png"), 
     width = 14, height = 8, units = 'in', res = 300)
