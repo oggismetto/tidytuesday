@@ -11,13 +11,36 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2020 Episode 22: Cocktails
+
+For this episode i’ve been happy to check the chapter for of textmining
+book from D. Robinson and J. Silge. I’ve used pairwise correlation to
+analyze correlation among drinks sharing my favourite ingredient:
+orange. Citing from the book “We may instead want to examine correlation
+among words, which indicates how often they appear together relative to
+how often they appear separately. In particular, here we’ll focus on the
+phi coefficient, a common measure for binary correlation. The focus of
+the phi coefficient is how much more likely it is that either both word
+X and Y appear, or neither do, than that one appears without the other.”
+In my plot, words are drinks and the section in the text he’s referring
+to is the ingredient.  
+What i’ve learned:  
+\* tidying with str\_detect() and str\_replace()  
+\* pairwise correlation with the widyr package \* discovered
+ggpomological which i’ve used for the color scale of the points/nodes in
+the network  
+\* struggled to set a nice font. Will check it in the next episode
+
+![Cocktails](plots/2020_22/cocktails.png)
+
 ### Year 2020 Episode 21: Beach volleyball
 
 For this tidytuesday i really enjoyed learning the basics of ggraph. I
 was curious of how many players changed their partners during their
-career and their winning rate. What i’ve learned in this episode: \* how
-to tidy a wide format table with pivot\_longer(), separate(), and
-spread(). \* how to prepare data and plot a network with ggraph()
+career and their winning rate. What i’ve learned in this episode:  
+\* how to tidy a wide format table with pivot\_longer(), separate(), and
+spread().  
+\* how to prepare data and plot a network with ggraph()
 
 ![Volcano Eruptions](plots/2020_21/beach_volleyball.png)
 
