@@ -16,7 +16,7 @@ library(tidytuesdayR)
 library(here)
 library(hrbrthemes)
 library(cowplot)
-
+library(ggpomological)
 theme_set(theme_light())
 
 devtools::install_github("gadenbuie/ggpomological")
@@ -102,8 +102,8 @@ orange_plot <- ggraph(lay) +
   geom_node_text(aes(label = name), repel = TRUE) +
   scale_edge_color_continuous(low = "grey", high = "black") +
   labs(title = "My \"to drink\" list: drinks with my favourite fruit, guess which one!",
-       subtitle = "Correlation between orange based drinks based on their shared ingredients",
-       color = "Orange based drinks (nodes)",
+       subtitle = "Correlation among orange based drinks based on their shared ingredients",
+       color = "Orange based ingredient (nodes)",
        caption = "by @GoldenB16117397 | source: #TidyTuesday/Kaggle & Kaggle | Cocktails") +
   theme_void() + 
   scale_color_pomological() +
