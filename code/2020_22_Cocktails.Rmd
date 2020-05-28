@@ -1,0 +1,136 @@
+---
+title: "Cocktails"
+author: "oggismetto"
+date: "26/05/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(tidytuesdayR)
+library(here)
+library(hrbrthemes)
+library(cowplot)
+
+theme_set(theme_light())
+
+devtools::install_github("gadenbuie/ggpomological")
+scales::show_col(ggpomological:::pomological_palette)
+
+boston_cocktails <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-26/boston_cocktails.csv')
+
+```
+
+* can be a network of drinks linked by the ingredients they share
+* is it possible a cluster analysis?
+* grouped in macrocategories
+* we can use the widyr package by Dave Robinson to correlated the cocktails based on shared ingredients
+* have an excuse to study the chapter 4 of the text mining book
+
+* can filter for all citrus stuff in drinks
+* then i wander possible drinks i could try by the fruits in it
+
+```{r}
+
+library(igraph)
+library(graphlayouts)
+library(ggraph)
+library(tidytext)
+library(widyr)
+
+# We may instead want to examine correlation among words, which indicates how often they appear together relative to how often they appear separately.
+# we need to filter for at least relatively common words first
+# drink with at least 5 ingredients
+
+# orange based cocktails
+boston_cocktails_edges <- boston_cocktails %>% 
+  distinct(name, ingredient) %>%
+  mutate(ingredient = tolower(ingredient)) %>%
+  filter(str_detect(ingredient, c("orange|curacao|mandarine|`triple sec`"))) %>%
+  filter(!str_detect(ingredient, c("wedge|twist|wheel|peel|zest"))) %>%
+  left_join(boston_cocktails, by = "name") %>%
+  distinct(name, ingredient.y) %>%
+  rename(drink = name, ingredient = ingredient.y) %>%
+  add_count(drink) %>%
+  filter(n >= 4) %>% #with at least 4 ingredients
+  pairwise_cor(drink,ingredient, sort = TRUE) %>%
+  filter(correlation > 0.5) %>%
+  rename(`Correlation (links)` = correlation)
+
+# boston cocktails nodes
+boston_cocktails_nodesize <- boston_cocktails %>% 
+    distinct(name, ingredient) %>%
+    mutate(ingredient = tolower(ingredient)) %>%
+    filter(str_detect(ingredient, c("orange|curacao|mandarine|`triple sec`"))) %>%
+    filter(!str_detect(ingredient, c("wedge|twist|wheel|peel|zest"))) %>%
+    left_join(boston_cocktails, by = "name") %>%
+    distinct(name, ingredient.x)  %>%
+    count(name, sort = T)
+
+boston_cocktails_nodecolour <- boston_cocktails %>% 
+    distinct(name, ingredient) %>%
+    mutate(ingredient = tolower(ingredient)) %>%
+    filter(str_detect(ingredient, c("orange|curacao|mandarine|`triple sec`"))) %>%
+    filter(!str_detect(ingredient, c("wedge|twist|wheel|peel|zest"))) %>%
+    left_join(boston_cocktails, by = "name") %>%
+    distinct(name, ingredient.x) %>%
+    group_by(name) %>%
+    filter(row_number() == 1)
+
+boston_cocktails_node_attributes <- boston_cocktails_nodesize %>%
+    inner_join(boston_cocktails_nodecolour) %>%
+  merge(boston_cocktails_edges, by.x = "name", by.y = "item1", all.y =  TRUE) %>%
+  distinct(name, n, ingredient.x) %>%
+  rename(favourite_ingredient = ingredient.x) %>%
+  mutate(favourite_ingredient = str_replace(favourite_ingredient, "juice of orange", "orange juice"),
+         favourite_ingredient = str_replace(favourite_ingredient, "^orange$", "fresh orange juice"),
+         favourite_ingredient = str_replace(favourite_ingredient, "^each orange juice and sweet sherry$", "fresh orange juice"))
+
+# network
+net <- graph_from_data_frame(d=boston_cocktails_edges, vertices=boston_cocktails_node_attributes, directed=F) 
+lay = create_layout(net, layout = "fr")
+
+# Plot
+orange_plot <- ggraph(lay) +
+  geom_edge_link(aes(edge_color = `Correlation (links)`)) +
+  geom_node_point(aes(color = favourite_ingredient)) +
+  geom_node_text(aes(label = name), repel = TRUE) +
+  scale_edge_color_continuous(low = "grey", high = "black") +
+  labs(title = "My \"to drink\" list: drinks with my favourite fruit, guess which one!",
+       subtitle = "Correlation between orange based drinks based on their shared ingredients",
+       color = "Orange based drinks (nodes)",
+       caption = "by @GoldenB16117397 | source: #TidyTuesday/Kaggle & Kaggle | Cocktails") +
+  theme_void() + 
+  scale_color_pomological() +
+  theme(
+  plot.margin = unit(rep(1, 4), "cm"),
+  plot.title = element_text(size = 18, 
+                            face = "bold",
+                            color = "#22292F", 
+                            margin = margin(b = 8)),
+  plot.subtitle = element_text(size = 14, 
+                               lineheight = 1.1,
+                               color = "#22292F",
+                               margin = margin(b = 25)),
+  plot.caption = element_text(size = 10,
+                              margin = margin(t = 25), 
+                              color = "#3D4852"),
+  plot.background = element_rect(fill = "#fffeea", color = NA), 
+  panel.grid = element_blank())
+
+orange_plot <- ggdraw() +
+  draw_plot(orange_plot) +
+    draw_image("https://lh3.googleusercontent.com/proxy/9LkPjN3LQXuqWgFaFbVJUumGUOudx370BdLqkQRSOQU5e9ucQQ4md8hG01yziuqqV40LwF_j_UGqHsVjKEqiHLD4edo8oKO6IqRcSdZohGhzSn8X-Lw", x = 0.37, y = 0.32, scale = .2)
+
+png(here("plots","2020_22", "cocktails.png"), 
+    width = 12, height = 7, units = 'in', res = 300)
+orange_plot
+dev.off()
+
+```
+
