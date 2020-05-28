@@ -17,31 +17,18 @@ library(here)
 library(hrbrthemes)
 library(cowplot)
 library(ggpomological)
-theme_set(theme_light())
-
-devtools::install_github("gadenbuie/ggpomological")
-scales::show_col(ggpomological:::pomological_palette)
-
-boston_cocktails <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-26/boston_cocktails.csv')
-
-```
-
-* can be a network of drinks linked by the ingredients they share
-* is it possible a cluster analysis?
-* grouped in macrocategories
-* we can use the widyr package by Dave Robinson to correlated the cocktails based on shared ingredients
-* have an excuse to study the chapter 4 of the text mining book
-
-* can filter for all citrus stuff in drinks
-* then i wander possible drinks i could try by the fruits in it
-
-```{r}
-
 library(igraph)
 library(graphlayouts)
 library(ggraph)
 library(tidytext)
 library(widyr)
+
+#devtools::install_github("gadenbuie/ggpomological", force = TRUE)
+boston_cocktails <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-26/boston_cocktails.csv')
+
+```
+
+```{r}
 
 # We may instead want to examine correlation among words, which indicates how often they appear together relative to how often they appear separately.
 # we need to filter for at least relatively common words first
@@ -99,36 +86,42 @@ lay = create_layout(net, layout = "fr")
 orange_plot <- ggraph(lay) +
   geom_edge_link(aes(edge_color = `Correlation (links)`)) +
   geom_node_point(aes(color = favourite_ingredient)) +
-  geom_node_text(aes(label = name), repel = TRUE) +
+  geom_node_text(aes(label = name), repel = TRUE, family = "Purisa") +
   scale_edge_color_continuous(low = "grey", high = "black") +
-  labs(title = "My \"to drink\" list: drinks with my favourite fruit, guess which one!",
+  labs(title = "My \"to drink\" list, guess my favourite fruit !!",
        subtitle = "Correlation among orange based drinks based on their shared ingredients",
-       color = "Orange based ingredient (nodes)",
-       caption = "by @GoldenB16117397 | source: #TidyTuesday/Kaggle & Kaggle | Cocktails") +
+       color = "Orange based ingredient",
+       caption = "by @GoldenB16117397 | source: #TidyTuesday/Kaggle & Kaggle | Cocktails",
+       edge_color = "Correlation") +
   theme_void() + 
   scale_color_pomological() +
   theme(
-  plot.margin = unit(rep(1, 4), "cm"),
-  plot.title = element_text(size = 18, 
+  plot.margin = unit(rep(1.5, 4), "cm"),
+  plot.title = element_text(family = "Purisa, bold",
+                            size = 20, 
                             face = "bold",
                             color = "#22292F", 
                             margin = margin(b = 8)),
-  plot.subtitle = element_text(size = 14, 
+  plot.subtitle = element_text(family = "Purisa",
+                               size = 16, 
                                lineheight = 1.1,
                                color = "#22292F",
                                margin = margin(b = 25)),
-  plot.caption = element_text(size = 10,
+  plot.caption = element_text(family = "Purisa",
+                              size = 10,
                               margin = margin(t = 25), 
                               color = "#3D4852"),
-  plot.background = element_rect(fill = "#fffeea", color = NA), 
+  plot.background = element_rect(fill = "#fffeea", color = NA),
+  legend.text = element_text(size=9, family = "Purisa"),
+  legend.title= element_text(size=10, family = "Purisa", face = "bold"),
   panel.grid = element_blank())
 
 orange_plot <- ggdraw() +
   draw_plot(orange_plot) +
-    draw_image("https://lh3.googleusercontent.com/proxy/9LkPjN3LQXuqWgFaFbVJUumGUOudx370BdLqkQRSOQU5e9ucQQ4md8hG01yziuqqV40LwF_j_UGqHsVjKEqiHLD4edo8oKO6IqRcSdZohGhzSn8X-Lw", x = 0.37, y = 0.32, scale = .2)
+    draw_image("https://images.vexels.com/media/users/3/141056/isolated/preview/cfbe871d307b2230bcfd92f486bc8505-realistic-orange-by-vexels.png", x = 0.4, y = 0.32, scale = .3)
 
 png(here("plots","2020_22", "cocktails.png"), 
-    width = 12, height = 7, units = 'in', res = 300)
+    width = 13, height = 8, units = 'in', res = 300)
 orange_plot
 dev.off()
 
