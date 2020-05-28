@@ -84,17 +84,17 @@ lay = create_layout(net, layout = "fr")
 
 # Plot
 orange_plot <- ggraph(lay) +
-  geom_edge_link(aes(edge_color = `Correlation (links)`)) +
-  geom_node_point(aes(color = favourite_ingredient)) +
+  geom_edge_link(aes(edge_color = `Correlation (links)`), edge_width = 1) +
+  geom_node_point(aes(fill = favourite_ingredient), colour="white", pch=21, size = 2.5) +
   geom_node_text(aes(label = name), repel = TRUE, family = "Purisa") +
-  scale_edge_color_continuous(low = "grey", high = "black") +
+  scale_edge_color_continuous(low = "#d0d4ed", high = "#303f9f") +
   labs(title = "My \"to drink\" list, guess my favourite fruit !!",
        subtitle = "Correlation among orange based drinks based on their shared ingredients",
-       color = "Orange based ingredient",
+       fill = "Orange based ingredient",
        caption = "by @GoldenB16117397 | source: #TidyTuesday/Kaggle & Kaggle | Cocktails",
        edge_color = "Correlation") +
   theme_void() + 
-  scale_color_pomological() +
+  scale_fill_pomological() +
   theme(
   plot.margin = unit(rep(1.5, 4), "cm"),
   plot.title = element_text(family = "Purisa, bold",
