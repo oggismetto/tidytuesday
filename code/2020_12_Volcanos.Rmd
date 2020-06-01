@@ -36,7 +36,9 @@ distinct() %>%
     ggplot(aes(x = n, y = reorder(volcano_name,n))) +
     geom_col(fill = "#EDD9A3") +
     hrbrthemes::theme_ft_rc() +
-    theme(legend.position = "none") +
+    theme(legend.position = "none",
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank()) +
     labs(title = "Most active volcanos (top 10)",
        x = "Number of eruptions",
        y ="")
@@ -49,6 +51,9 @@ p2 <- eruptions %>%
     stat_density_2d(aes(fill = ..density..),
                     geom = "raster", contour = FALSE) +
     viridis::scale_fill_viridis('Density of eruptions \n at that VEI',option = 'magma')  + hrbrthemes::theme_ft_rc() +
+  scale_x_continuous(expand =c(0,0)) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
     xlab('Year') +
     ylab('Volcano Explosivity Index (VEI, 1 to 8 scale)') +
     labs(title = "Explosivity of Etna eruptions since the 20th century",
