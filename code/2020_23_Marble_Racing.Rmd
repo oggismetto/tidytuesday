@@ -94,7 +94,7 @@ map_plot <- ggplot(qual_race_stats) +
         ) +
   labs(x = "Position",
        y = "Team (points)",
-       title = "Marbula One, Season 1\nSavage Speaders won but Hazers had the best stats",
+       title = "Marbula One, Season 1\nSavage Speeders won but Hazers had the best stats",
        subtitle = "Average position in qualification (black dots) and race (red dots)") +
   scale_x_discrete(limits = c(1:16)) +
   annotate("text", x = 4, y = 12.5, label = "Despite leading for \naverage position Hazers \nended 2nd in the \nChampionship standings", size = 3)+ 
