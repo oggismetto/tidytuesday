@@ -1,0 +1,77 @@
+---
+title: "test"
+author: "PL Curci"
+date: "6/3/2020"
+output: html_document
+---
+
+# finished
+```{r}
+
+# completely white
+
+map_plot <- ggplot(qual_race_stats) +
+  geom_segment(aes(x = avg_qual, xend = avg_race, y = team_name, yend = team_name), color = "white", 
+                size = 2, alpha = 0.4) +
+  geom_point(aes(x = avg_qual, y = team_name), fill = "grey", shape = 21, color = "white", size = 2, alpha = 0.6) +
+  geom_point(aes(x = avg_race, y = team_name), fill = "white", shape = 21, color = "white", size = 4) +
+  theme_minimal() +
+  #theme_ft_rc() +
+  theme(legend.position = "none",
+        plot.title = element_text(family = "Formula1,Formula1 Display Bold",
+                            size = 14, 
+                            color = "white", 
+                            margin = margin(b = 12)),
+        axis.text =  element_text(family = "Formula1,Formula1 Display Bold", color= "white"),
+        axis.title = element_text(family = "Formula1,Formula1 Display Bold", color= "white", margin = margin(t = 12)),
+        plot.background = element_blank(),#element_rect(fill = "white", color = NA),
+        panel.background = element_grob(),#element_blank(), #element_rect(fill = "white", color = NA), ##d50000
+        panel.grid.major.x = element_line(size = 0.04, colour = "white"),
+        panel.grid.major.y = element_line(size = 0.04, colour = "white")
+        ) +
+  labs(x = "Position",
+       y = "Team",
+       title = "Marbula One: Average position in qualification and race") +
+  scale_x_discrete(limits = c(1:16)) #+
+    scale_colour_manual(values = c(good = "red", bad = "black"))
+
+
+reds <- c("black", "#E32219")
+g <- rasterGrob(reds, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = TRUE)
+
+grid.newpage()
+grid.draw(g)
+print(map_plot, newpage = FALSE) 
+draw_image(("/home/luca/Desktop/Marbula_One_JMR_Logo_V1.png"), hjust = 0, x = 0.35, y = 0.32, scale = 0.3)
+    
+```
+
+```{r}
+map_plot <- ggplot(qual_race_stats) +
+  geom_segment(aes(x = avg_qual, xend = avg_race, y = team_name, yend = team_name, color = avg_qual > avg_race), 
+                size = 2, alpha = 0.4) +
+  geom_point(aes(x = avg_qual, y = team_name), fill = "grey", shape = 23, color = "black", size = 3) +
+  geom_point(aes(x = avg_race, y = team_name), fill = "yellow", shape = 21, color = "black", size = 3) +
+  theme_minimal() +
+  #theme_ft_rc() +
+  theme(legend.position = "none",
+        plot.title = element_text(family = "Formula1,Formula1 Display Bold",
+                            size = 20, 
+                            color = "#22292F", 
+                            margin = margin(b = 8)),
+        axis.text =  element_text(family = "Formula1,Formula1 Display Bold"),
+        axis.title = element_text(family = "Formula1,Formula1 Display Bold"),
+        plot.background = element_rect(fill = "#d50000", color = NA)
+        ) +
+  labs(x = "Position",
+       y = "Team",
+       title = "Marbula One: Average position in qualification and race") +
+  scale_x_discrete(limits = c(1:16))
+
+library(hrbrthemes)
+library(cowplot)
+
+ggdraw(map_plot) +
+  draw_image(("/home/luca/Desktop/Marbula_One_JMR_Logo_V1.png"), hjust = 0, x = 0.3, y = 0.3, scale = 0.3)
+
+```
