@@ -11,6 +11,13 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2020 Episode 23: Marble Races
+
+Thi is absolutely crazy kind of competition. There was not much
+information in the dataset but i’ve enjoyed.
+
+![Marble Races](plots/2020_23/marbula1.png)
+
 ### Year 2020 Episode 22: Cocktails
 
 For this episode i’ve been happy to check the chapter for of textmining

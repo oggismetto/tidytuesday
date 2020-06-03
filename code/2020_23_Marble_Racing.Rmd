@@ -1,0 +1,121 @@
+---
+title: "Cocktails"
+author: "oggismetto"
+date: "01/06/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(cowplot)
+library(grid)
+
+marbles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-06-02/marbles.csv')
+
+theme_set(theme_light())
+
+```
+
+* who was the best classified for all runs?
+* we have Q: qualification and R: race
+* is somebody doing better at qualification than race or viceversa?
+* track the lines of the top 2
+
+```{r}
+
+#stats
+qual_stats <- marbles %>%
+  filter(str_detect(race, "S1Q")) %>%
+  select(team_name, pole) %>%
+  mutate(pole = as.numeric(str_replace(pole, "P",""))) %>%
+  group_by(team_name) %>%
+  mutate(avg_qual = mean(pole)) %>%
+  select(-pole) %>%
+  distinct() %>%
+  ungroup()
+
+race_stats <- marbles %>%
+  filter(str_detect(race, "S1R"))%>% 
+  select(race, team_name, time_s, points)%>%
+  group_by(race) %>%
+  mutate(position = rank(time_s)) %>%
+  ungroup() %>%
+  group_by(team_name) %>%
+  mutate(avg_race = mean(position)) %>%
+  select(team_name, avg_race) %>%
+  distinct() %>%
+  ungroup()
+
+points <- marbles %>%
+    filter(str_detect(race, "S1R"))%>% 
+    select(race, team_name, time_s, points) %>%
+    group_by(team_name) %>%
+    summarize (points = sum(points)) %>%
+    arrange(desc(points))
+
+qual_race_stats <- inner_join(qual_stats, race_stats) %>%
+  left_join(points) %>%
+mutate(team_name = paste0(team_name, " (", points, ")")) %>%
+  mutate(team_name = fct_reorder(team_name, -avg_race),
+         performance = ifelse(avg_qual > avg_race, "good", "bad"))
+  
+
+map_plot <- ggplot(qual_race_stats) +
+  geom_segment(aes(x = avg_qual, xend = avg_race, y = team_name, yend = team_name), 
+               color = "black", size = 2, alpha = 0.4) +
+  geom_point(aes(x = avg_qual, y = team_name), 
+             fill = "black", shape = 21, color = "white", size = 2, alpha = 0.6) +
+  geom_point(aes(x = avg_race, y = team_name), 
+             fill = "red", shape = 21, color = "white", size = 4) +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.title = element_text(family = "Formula1,Formula1 Display Bold",
+                            size = 14, 
+                            color = "black", 
+                            margin = margin(t = 10, b = 6)),
+        plot.subtitle = element_text(family = "Formula1,Formula1 Display Bold",
+                            size = 10, 
+                            color = "black", 
+                            margin = margin(b = 12)),
+        axis.text =  element_text(family = "Formula1,Formula1 Display Bold", color= "black"),
+        axis.title.x = element_text(family = "Formula1,Formula1 Display Bold", color= "black", 
+                                  margin = margin(t = 10)),
+        axis.title.y = element_text(family = "Formula1,Formula1 Display Bold", color= "black", 
+                                  margin = margin(r = 10)),
+        plot.background = element_blank(),#element_rect(fill = "white", color = NA),
+        panel.background = element_blank(), #element_rect(fill = "white", color = NA), ##d50000
+        panel.grid.major = element_line(size = 0.02, colour = "black")
+        ) +
+  labs(x = "Position",
+       y = "Team (points)",
+       title = "Marbula One, Season 1\nSavage Speaders won but Hazers had the best stats",
+       subtitle = "Average position in qualification (black dots) and race (red dots)") +
+  scale_x_discrete(limits = c(1:16)) +
+  annotate("text", x = 4, y = 12.5, label = "Despite leading for \naverage position Hazers \nended 2nd in the \nChampionship standings", size = 3)+ 
+  geom_curve(
+  aes(x = 4, y = 14, xend = 4.8, yend = 15.8), curvature = -0.2,
+  arrow = arrow(length = unit(0.03, "npc"))
+)+ 
+  geom_curve(
+  aes(x = 4, y = 9, xend = 5.5, yend = 10), curvature = -0.2,
+  arrow = arrow(length = unit(0.03, "npc"))
+)+
+  annotate("text",  x = 4, y = 7.2, label = "What was the problem with \nMellow Yellow? \nSecond best performers in \nqualifications but loosing this \nbig advantage during races", size = 3)
+
+marbula1 <- ggdraw(map_plot) +
+  draw_image(("/home/luca/Desktop/Marbula_One_JMR_Logo_V1.png"), hjust = 0, x = 0.35, y = 0.22, scale = 0.3)
+
+png(here("plots","2020_23", "marbula1.png"), 
+    width = 8, height = 5, units = 'in', res = 300)
+marbula1
+dev.off()
+
+
+```
+
