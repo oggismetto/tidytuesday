@@ -14,18 +14,10 @@ Sys.setlocale("LC_TIME", "en_US.UTF-8")
 library(tidyverse)
 library(here)
 library(cowplot)
-library(grid)
 
 marbles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-06-02/marbles.csv')
 
-theme_set(theme_light())
-
 ```
-
-* who was the best classified for all runs?
-* we have Q: qualification and R: race
-* is somebody doing better at qualification than race or viceversa?
-* track the lines of the top 2
 
 ```{r}
 
@@ -62,8 +54,7 @@ points <- marbles %>%
 qual_race_stats <- inner_join(qual_stats, race_stats) %>%
   left_join(points) %>%
 mutate(team_name = paste0(team_name, " (", points, ")")) %>%
-  mutate(team_name = fct_reorder(team_name, -avg_race),
-         performance = ifelse(avg_qual > avg_race, "good", "bad"))
+  mutate(team_name = fct_reorder(team_name, -avg_race))
   
 
 map_plot <- ggplot(qual_race_stats) +
@@ -75,6 +66,7 @@ map_plot <- ggplot(qual_race_stats) +
              fill = "red", shape = 21, color = "white", size = 4) +
   theme_minimal() +
   theme(legend.position = "none",
+        # i've installed the Formula1 font which is supercool for this kind of plots
         plot.title = element_text(family = "Formula1,Formula1 Display Bold",
                             size = 14, 
                             color = "black", 
@@ -90,32 +82,28 @@ map_plot <- ggplot(qual_race_stats) +
                                   margin = margin(r = 10)),
         plot.background = element_blank(),#element_rect(fill = "white", color = NA),
         panel.background = element_blank(), #element_rect(fill = "white", color = NA), ##d50000
-        panel.grid.major = element_line(size = 0.02, colour = "black")
-        ) +
+        panel.grid.major = element_line(size = 0.02, colour = "black")) +
   labs(x = "Position",
        y = "Team (points)",
        title = "Marbula One, Season 1\nSavage Speeders won but Hazers had the best stats",
        subtitle = "Average position in qualification (black dots) and race (red dots)") +
   scale_x_discrete(limits = c(1:16)) +
+# adding annotations
   annotate("text", x = 4, y = 12.5, label = "Despite leading for \naverage position Hazers \nended 2nd in the \nChampionship standings", size = 3)+ 
-  geom_curve(
-  aes(x = 4, y = 14, xend = 4.8, yend = 15.8), curvature = -0.2,
-  arrow = arrow(length = unit(0.03, "npc"))
-)+ 
-  geom_curve(
-  aes(x = 4, y = 9, xend = 5.5, yend = 10), curvature = -0.2,
-  arrow = arrow(length = unit(0.03, "npc"))
-)+
+  geom_curve(aes(x = 4, y = 14, xend = 4.8, yend = 15.8), 
+             curvature = -0.2, arrow = arrow(length = unit(0.03, "npc"))) + 
+  geom_curve(aes(x = 4, y = 9, xend = 5.5, yend = 10), 
+             curvature = -0.2, arrow = arrow(length = unit(0.03, "npc"))) +
   annotate("text",  x = 4, y = 7.2, label = "What was the problem with \nMellow Yellow? \nSecond best performers in \nqualifications but loosing this \nbig advantage during races", size = 3)
 
+# embed the logo
 marbula1 <- ggdraw(map_plot) +
-  draw_image(("/home/luca/Desktop/Marbula_One_JMR_Logo_V1.png"), hjust = 0, x = 0.35, y = 0.22, scale = 0.3)
+  draw_image(here("other", "imgs", "Marbula_One_JMR_Logo_V1.png"), hjust = 0, x = 0.35, y = 0.22, scale = 0.3)
 
-png(here("plots","2020_23", "marbula1.png"), 
-    width = 8, height = 5, units = 'in', res = 300)
+# save it
 marbula1
-dev.off()
-
+ggsave(here("plots","2020_23", "marbula1.png"), 
+    width = 8, height = 5, units = 'in', dpi = 300)
 
 ```
 
