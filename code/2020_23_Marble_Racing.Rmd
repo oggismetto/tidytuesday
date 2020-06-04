@@ -49,7 +49,6 @@ map_plot <- ggplot(qual_race_stats) +
              fill = "red", shape = 21, color = "white", size = 4) +
   theme_minimal() +
   theme(legend.position = "none",
-        # i've installed the Formula1 font which is supercool for this kind of plots
         plot.title = element_text(family = "Formula1,Formula1 Display Bold",
                             size = 14, 
                             color = "black", 
@@ -89,4 +88,65 @@ ggsave(here("plots","2020_23", "marbula1.png"),
     width = 8, height = 5, units = 'in', dpi = 300)
 
 ```
+
+# Second idea. plot with a background gradient
+
+```{r}
+
+library(grid)
+
+reds <- c("black", "#E32219")
+g <- rasterGrob(reds, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = TRUE)
+
+# completely white
+# lets plot it
+map_plot <- ggplot(qual_race_stats) +
+  annotation_custom(grob = g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.title = element_text(family = "Formula1,Formula1 Display Bold",
+                            size = 14, 
+                            color = "black", 
+                            margin = margin(t = 10, b = 6)),
+        plot.subtitle = element_text(family = "Formula1,Formula1 Display Bold",
+                            size = 10, 
+                            color = "black", 
+                            margin = margin(b = 12)),
+        axis.text =  element_text(family = "Formula1,Formula1 Display Bold", color= "black"),
+        axis.title.x = element_text(family = "Formula1,Formula1 Display Bold", color= "black", 
+                                  margin = margin(t = 10)),
+        axis.title.y = element_text(family = "Formula1,Formula1 Display Bold", color= "black", 
+                                  margin = margin(r = 10)),
+        plot.background = element_blank(),#element_rect(fill = "white", color = NA),
+        panel.background = element_blank(), #element_rect(fill = "white", color = NA), ##d50000
+        panel.grid.major = element_line(size = 0.02, colour = "black")) +
+  labs(x = "Position",
+       y = "Team (points)",
+       title = "Marbula One, Season 1\nSavage Speeders won but Hazers had the best stats",
+       subtitle = "Average position in qualification (black dots) and race (red dots)") +
+  scale_x_discrete(limits = c(1:16)) +
+    geom_segment(aes(x = avg_qual, xend = avg_race, y = team_name, yend = team_name), 
+               color = "white", size = 2, alpha = 0.4) +
+  geom_point(aes(x = avg_qual, y = team_name), 
+             fill = "black", shape = 21, color = "white", size = 2, alpha = 0.6) +
+  geom_point(aes(x = avg_race, y = team_name), 
+             fill = "red", shape = 21, color = "white", size = 4) +
+# adding annotations
+  annotate("text", x = 4, y = 12.5, label = "Despite leading for \naverage position Hazers \nended 2nd in the \nChampionship standings", size = 3, color = "white")+ 
+  geom_curve(aes(x = 4, y = 14, xend = 4.8, yend = 15.8), 
+             curvature = -0.2, arrow = arrow(length = unit(0.03, "npc")),  color = "white") + 
+  geom_curve(aes(x = 4, y = 9, xend = 5.5, yend = 10), 
+             curvature = -0.2, arrow = arrow(length = unit(0.03, "npc")),  color = "white") +
+  annotate("text",  x = 4, y = 7.2, label = "What was the problem with \nMellow Yellow? \nSecond best performers in \nqualifications but loosing this \nbig advantage during races", size = 3 , color = "white")
+
+# embed the logo
+marbula1 <- ggdraw(map_plot) +
+  draw_image(here("other", "imgs", "Marbula_One_JMR_Logo_V1.png"), hjust = 0, x = 0.33, y = 0.22, scale = 0.3)
+
+# save it
+marbula1
+ggsave(here("plots","2020_23", "marbula1_2nd.png"), 
+    width = 8, height = 5, units = 'in', dpi = 300)
+```
+
 
