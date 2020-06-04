@@ -21,42 +21,25 @@ marbles <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/ti
 
 ```{r}
 
-#stats
-qual_stats <- marbles %>%
-  filter(str_detect(race, "S1Q")) %>%
-  select(team_name, pole) %>%
+# compute average for qualification, race and sum the points collected 
+qual_race_stats <- marbles %>%
   mutate(pole = as.numeric(str_replace(pole, "P",""))) %>%
+  select(race, team_name, pole, points, time_s) %>%
   group_by(team_name) %>%
-  mutate(avg_qual = mean(pole)) %>%
-  select(-pole) %>%
-  distinct() %>%
-  ungroup()
-
-race_stats <- marbles %>%
+  mutate(avg_qual = mean(pole, na.rm = TRUE),
+            points = sum(points, na.rm = TRUE)) %>%
   filter(str_detect(race, "S1R"))%>% 
-  select(race, team_name, time_s, points)%>%
   group_by(race) %>%
   mutate(position = rank(time_s)) %>%
-  ungroup() %>%
   group_by(team_name) %>%
   mutate(avg_race = mean(position)) %>%
-  select(team_name, avg_race) %>%
-  distinct() %>%
-  ungroup()
-
-points <- marbles %>%
-    filter(str_detect(race, "S1R"))%>% 
-    select(race, team_name, time_s, points) %>%
-    group_by(team_name) %>%
-    summarize (points = sum(points)) %>%
-    arrange(desc(points))
-
-qual_race_stats <- inner_join(qual_stats, race_stats) %>%
-  left_join(points) %>%
-mutate(team_name = paste0(team_name, " (", points, ")")) %>%
+  distinct(team_name, points, avg_qual, avg_race) %>%
+  ungroup() %>%
+  mutate(team_name = paste0(team_name, " (", points, ")")) %>%
+  select(team_name, avg_qual, avg_race, points) %>%
   mutate(team_name = fct_reorder(team_name, -avg_race))
-  
 
+# lets plot it
 map_plot <- ggplot(qual_race_stats) +
   geom_segment(aes(x = avg_qual, xend = avg_race, y = team_name, yend = team_name), 
                color = "black", size = 2, alpha = 0.4) +
