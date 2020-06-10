@@ -11,6 +11,13 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2020 Episode 24: African American Achievements
+
+Not much datascience this time. I learned using wordcloud2 and other
+functions of cowplot.
+
+![African American](plots/2020_24/african_american.png)
+
 ### Year 2020 Episode 23: Marble Races
 
 Thi is absolutely crazy kind of competition. There was not much
