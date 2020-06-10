@@ -68,8 +68,8 @@ Combine the figures
 ```{r}
 african_american <- ggdraw() +
   draw_image(here("other", "imgs", "mlk_wordcloud.png"), hjust = 0, x = 0.1, y = -0.05, scale = 0.8)+
-  draw_plot(density, scale = 0.43, x = -0.3, y = 0.15) + 
-  draw_label("African American Achievements, a complex story", color = "black", size = 25, angle = 0, y = 0.95) +
+  draw_plot(density, scale = 0.43, x = -0.29, y = 0.13) + 
+  draw_label("African American Achievements, a complex history", color = "black", size = 25, angle = 0, y = 0.95) +
   draw_label("When we allow freedom to ring-when we let it ring
 \nfrom every city and every hamlet, from every state and
 \nevery city, we will be able to speed up that day when all
@@ -80,7 +80,8 @@ african_american <- ggdraw() +
 \nfree at last\"
 \n(MARTIN LUTHER KING JR., 1963) ", color = "black", size = 7, angle = 0, x = 0.2, y = 0.23, fontfamily = "TT Courier New") + 
   draw_label("by @GoldenB16117397 | source: TidyTuesday | African American Achievements", color = "black", size = 6, angle = 0, x = 0.8, y = 0.05)+ 
-  draw_label("#BlackLivesMatter", color = "black", size = 10, angle = 0, x = 0.85, y = 0.85, fontface = "bold")
+  draw_label("#BlackLivesMatter", color = "black", size = 10, angle = 0, x = 0.88, y = 0.8, fontface = "bold")+ 
+  draw_label("Breakdown of african american achievements over time and summarized in one of their most popular heroes", color = "black", size = 12, angle = 0, x = 0.5, y = 0.88)
 
 african_american
 ggsave(here("plots","2020_24", "african_american.png"), 
