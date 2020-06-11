@@ -35,7 +35,6 @@ science <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/ti
 density <- firsts %>%
   select(year, category) %>%
   mutate(decade = year %/% 10 * 10) %>%
-  select(decade, category) %>%
   count(decade, category) %>% 
   ggplot(aes(x = decade, y = fct_rev(category), height = n)) +
   geom_ridgeline(scale = 0.1, alpha = 0.6, fill = "black", colour = "white") + 
@@ -50,7 +49,6 @@ density <- firsts %>%
 ```{r}
 
 accomplishments <- firsts %>%
-  select(accomplishment, category) %>%
   select(accomplishment) %>%
   unnest_tokens(word, accomplishment) %>%
   filter(!word %in% c("first", "american","african")) %>%
@@ -63,7 +61,7 @@ wordcloud2(accomplishments, figPath = "other/img/mlk.jpeg", size  =1.5, color = 
 # then you have to save it in png format
 ```
 
-Combine the figures
+# Combine the figures and save the plot
 
 ```{r}
 african_american <- ggdraw() +

@@ -48,7 +48,8 @@ map_plot <- ggplot(qual_race_stats) +
   geom_point(aes(x = avg_race, y = team_name), 
              fill = "red", shape = 21, color = "white", size = 4) +
   theme_minimal() +
-  theme(legend.position = "none",
+  theme(plot.title.position = "plot",
+        legend.position = "none",
         plot.title = element_text(family = "Formula1,Formula1 Display Bold",
                             size = 14, 
                             color = "black", 
@@ -67,7 +68,7 @@ map_plot <- ggplot(qual_race_stats) +
         panel.grid.major = element_line(size = 0.02, colour = "black")) +
   labs(x = "Position",
        y = "Team (points)",
-       title = "Marbula One, Season 1\nSavage Speeders won but Hazers had the best stats",
+       title = "Marbula One, Season 1: Savage Speeders won but Hazers had the best stats",
        subtitle = "Average position in qualification (black dots) and race (red dots)") +
   scale_x_discrete(limits = c(1:16)) +
 # adding annotations
@@ -103,7 +104,8 @@ g <- rasterGrob(reds, width = unit(1, "npc"), height = unit(1, "npc"), interpola
 map_plot <- ggplot(qual_race_stats) +
   annotation_custom(grob = g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
   theme_minimal() +
-  theme(legend.position = "none",
+  theme(plot.title.position = "plot",
+        legend.position = "none",
         plot.title = element_text(family = "Formula1,Formula1 Display Bold",
                             size = 14, 
                             color = "black", 
@@ -122,7 +124,7 @@ map_plot <- ggplot(qual_race_stats) +
         panel.grid.major = element_line(size = 0.02, colour = "black")) +
   labs(x = "Position",
        y = "Team (points)",
-       title = "Marbula One, Season 1\nSavage Speeders won but Hazers had the best stats",
+       title = "Marbula One, Season 1: Savage Speeders won but Hazers had the best stats",
        subtitle = "Average position in qualification (black dots) and race (red dots)") +
   scale_x_discrete(limits = c(1:16)) +
     geom_segment(aes(x = avg_qual, xend = avg_race, y = team_name, yend = team_name), 
@@ -146,7 +148,7 @@ marbula1 <- ggdraw(map_plot) +
 # save it
 marbula1
 ggsave(here("plots","2020_23", "marbula1_2nd.png"), 
-    width = 8, height = 5, units = 'in', dpi = 300)
+    width = 9, height = 5, units = 'in', dpi = 300)
 ```
 
 
