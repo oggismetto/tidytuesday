@@ -11,6 +11,11 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2020 Episode 25: African American History
+
+![African
+American](https://media.giphy.com/media/ZZr3Qqa5T8E4HQgIRi/giphy.gif)
+
 ### Year 2020 Episode 24: African American Achievements
 
 Not much datascience this time. I learned using wordcloud2 and other

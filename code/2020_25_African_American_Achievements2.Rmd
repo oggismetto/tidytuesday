@@ -1,0 +1,90 @@
+---
+title: "African American History"
+author: "oggismetto"
+date: "15/06/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(gganimate)
+
+# Get the Data
+slave_routes <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-06-16/slave_routes.csv')
+
+```
+
+* cumulative sold slaves over time in Africa according to the ports
+
+```{r}
+data <- slave_routes %>%
+  filter(!is.na(n_slaves_arrived)) %>%
+  count(place_of_purchase, year_arrival, wt = n_slaves_arrived) %>%
+  filter(! place_of_purchase %in% c("Africa., port unspecified", "West Central Africa and St. Helena, port unspecified")) %>%
+  group_by(place_of_purchase) %>%
+  arrange(year_arrival) %>%
+  mutate(cumulative = cumsum(n)) %>%
+  ungroup() %>%
+  select(place_of_purchase, year_arrival, cumulative) %>%
+  # each place should be present each year
+  complete(place_of_purchase, year_arrival) %>% 
+  group_by(place_of_purchase) %>%
+  # cumulative sum for slaves sold in that place each year
+  fill(cumulative) %>%
+  # fill is in down direction. so the up numbers where NA should be 0
+  mutate(cumulative = replace_na(cumulative, 0))%>%
+  ungroup() %>%
+  group_by(year_arrival) %>%
+  mutate(rank = rank(-cumulative)) %>%
+  filter(rank <= 10) %>%
+  ungroup() %>%
+  mutate(year_arrival = as.integer(year_arrival),
+         cumulative = as.integer(cumulative)) %>%
+  arrange(year_arrival)
+```
+
+#  Animated plot
+
+```{r}
+
+p <- data %>%
+  ggplot(aes(rank, 
+             group = place_of_purchase, 
+             height=.5, 
+             fill = place_of_purchase)) +
+  geom_tile(aes(y = cumulative/2, 
+                height = cumulative, width = 0.9),
+            alpha = 0.8, 
+            color = NA) +
+  geom_text(aes(y = 0, 
+                label = paste(place_of_purchase, " ")), 
+            vjust = 0.2, hjust = 1) +
+    coord_flip(clip = "off", expand = TRUE) +
+    transition_time(year_arrival) +
+  scale_x_reverse() +
+  scale_fill_viridis_d() +
+  scale_y_continuous(labels = scales::comma) +
+  labs(title = "Places of purchase ranked by number of slaves sold during {frame_time}", 
+       x = "", 
+       y = "sold slaves") +
+  theme(plot.title = element_text(hjust = 0.95, size = 16),
+        panel.background = element_blank(),
+        axis.ticks.y = element_blank(), 
+        axis.text.y  = element_blank(),
+        legend.position = "none",
+        plot.margin = margin(1,1,1,10, "cm")) +
+  ease_aes('linear')
+
+
+animate(p, fps = 4, end_pause = 20) #again, use anim_save(filename) to save
+
+anim_save("/scratch/git/tidytuesday/plots/2020_25/AfricanAmerican_history.gif", animation = last_animation())
+
+```
+
