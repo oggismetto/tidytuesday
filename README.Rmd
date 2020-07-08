@@ -9,8 +9,61 @@ output: md_document
 
 I've discovered this challenge during another challenge :) the #100DaysOfCode challenge. i've started during March 2020 quarantine for covid19. Hope one day will look back at these days and find a reason to smile and be happy about what i've accomplished. The list starts from the last one in time.
 
+### Year 2020 Episode 28: Coffee Ratings
+![Coffee Ratings](plots/2020_28/cofee.png)
+
+### Year 2020 Episode 27: Uncanny X-men
+Here's too hot. Minds are melting. Ideas lacking. Hugs and kisses in X-men  
+* learned using fuzzy join  
+* learned using geom_edge_fan (pretty useful for the future)  
+
+![Uncanny X-men](plots/2020_27/xmen.png)
+
+### Year 2020 Episode 25: African American History
+This week was so frustrating. I had only complex ideas crazy to realize. This is one example of one idea not working out as expected.
+![African American](https://media.giphy.com/media/ZZr3Qqa5T8E4HQgIRi/giphy.gif)
+
+### Year 2020 Episode 24: African American Achievements
+Not much datascience this time. I learned using wordcloud2 and other functions of cowplot.
+
+![African American](plots/2020_24/african_american.png)
+
+### Year 2020 Episode 23: Marble Races
+Thi is absolutely crazy kind of competition. There was not much information in the dataset but i've enjoyed.  
+* learned how to add a rastergrob to my plot in ggplot. WOW!
+
+![Marble Races](plots/2020_23/marbula1_2nd.png)
+
+![Marble Races](plots/2020_23/marbula1.png)
+
+### Year 2020 Episode 22: Cocktails
+For this episode i've been happy to check the chapter for of textmining book from D. Robinson and J. Silge. I've used pairwise correlation to analyze correlation among drinks sharing my favourite ingredient: orange. Citing from the book "We may instead want to examine correlation among words, which indicates how often they appear together relative to how often they appear separately. In particular, here we’ll focus on the phi coefficient, a common measure for binary correlation. The focus of the phi coefficient is how much more likely it is that either both word X and Y appear, or neither do, than that one appears without the other." In my plot, words are drinks and the section in the text he's referring to is the ingredient.  
+What i've learned:  
+* tidying with str_detect() and str_replace()  
+* pairwise correlation with the widyr package
+* discovered ggpomological which i've used for the color scale of the points/nodes in the network  
+* struggled to set a nice font. Will check it in the next episode
+
+
+![Cocktails](plots/2020_22/cocktails.png)
+
+### Year 2020 Episode 21: Beach volleyball
+For this tidytuesday i really enjoyed learning the basics of ggraph. I was curious of how many players changed their partners during their career and their winning rate. 
+What i've learned in this episode:  
+* how to tidy a wide format table with pivot_longer(), separate(), and spread().  
+* how to prepare data and plot a network with ggraph()
+
+![Volcano Eruptions](plots/2020_21/beach_volleyball.png)
+
+### Year 2020 Episode 20: Volcano Eruptions
+For this episode i really wanted to learn a new thing. Of course I ended up with a *magma* option from the viridis package in a density plot type raster. Looks nice and not so many efforts. Etna is the most active volcano in the world and i've been there.. It looks like a parallel universe.
+What i've learned:
+* how to prepare a raster density plot
+
+![Volcano Eruptions](plots/2020_20/Volcano_Eruptions.png)
+
 ### Year 2020 Episode 19: Animal Crossing - New Horizons
-For this episode i've explored quite a lot trying to find something interesting until i came up with this plot.. Still have to figure out why the months are in italian.. and why i couldnt' set the x_limits properly....
+For this episode i've explored quite a lot trying to find something interesting until i came up with this plot... Still have to figure out why the months are in italian.. and why i couldnt' set the x_limits properly....
 
 ![Animal Crossing](plots/2020_19/animal_crossing.png)
 

@@ -11,9 +11,23 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2020 Episode 28: Coffee Ratings
+
+![Coffee Ratings](plots/2020_28/cofee.png)
+
+### Year 2020 Episode 27: Uncanny X-men
+
+Here’s too hot. Minds are melting. Ideas lacking. Hugs and kisses in
+X-men  
+\* learned using fuzzy join  
+\* learned using geom\_edge\_fan (pretty useful for the future)
+
+![Uncanny X-men](plots/2020_27/xmen.png)
+
 ### Year 2020 Episode 25: African American History
 
-![African
+This week was so frustrating. I had only complex ideas crazy to realize.
+This is one example of one idea not working out as expected. ![African
 American](https://media.giphy.com/media/ZZr3Qqa5T8E4HQgIRi/giphy.gif)
 
 ### Year 2020 Episode 24: African American Achievements

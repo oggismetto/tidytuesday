@@ -1,0 +1,90 @@
+---
+title: "Xmen"
+author: "oggismetto"
+date: "02/07/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(ggradar)
+library(scales)
+library(cowplot)
+
+# Get the Data
+coffee_ratings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-07/coffee_ratings.csv')
+  
+# data cleaning
+coffee_ratings <- coffee_ratings %>%
+  select(!starts_with(match = c("altitude", "certification", "unit", "quakers", "owner_1", "expiration"))) %>%
+  select(-c(ico_number, farm_name, mill, lot_number, producer, number_of_bags, bag_weight, in_country_partner, grading_date, variety, company, category_one_defects, category_two_defects, moisture)) %>%
+    filter_at(vars(everything()), 
+            all_vars(!is.na(.))) %>%
+  rename(`clean cup` = clean_cup, `cupper points` = cupper_points)
+  
+```
+
+* radar chart
+
+```{r}
+
+coutry_ranking <- coffee_ratings %>%
+  group_by(country_of_origin) %>%
+  summarise(mean_rating = mean(total_cup_points)) %>%
+  arrange(-mean_rating) %>%
+  head(10)
+
+p <- coutry_ranking %>%
+  ggplot() +
+  geom_point(aes(mean_rating, reorder(country_of_origin, mean_rating)), size = 5) +
+  theme_minimal()
+
+example <- coffee_ratings %>%
+  select(country_of_origin, aroma:`cupper points`) %>%
+  group_by(country_of_origin) %>%
+  summarise_all("mean") %>%
+  ungroup() %>%
+  rename(group = country_of_origin)
+
+example <- example %>%
+  mutate_if(is.double, ~ . /10) %>%
+  filter(group %in% c("Ethiopia", "Papua New Guinea", "Kenya", "Uganda", "Ecuador"))
+
+example
+
+# Reorder factors based on ranking
+example$group <- factor(example$group, levels = c("Ethiopia", "Papua New Guinea", "Kenya", "Uganda", "Ecuador"))
+
+
+coffee <- ggradar(example, base.size = 15, 
+        font.radar = "Courier", 
+        background.circle.colour = "#6f4e37",
+        legend.title = "Countries",
+        plot.title = "Where can i get the best coffee? \nTop 5 countries based on coffee cupper reviews", 
+        background.circle.transparency = 0.9, 
+        axis.line.colour = "white",
+        gridline.max.colour = "white",
+        grid.line.width = 10,
+        gridline.max.linetype = "solid", 
+        group.colours = c("yellow", "green", "black", "red", "turquoise")) +
+  theme(plot.title.position = "plot",
+        plot.background = element_rect("darkcyan"),
+        panel.background = element_rect("darkcyan"),
+        legend.background = element_rect("darkcyan"),
+        legend.box.background = element_rect("darkcyan"),
+        legend.key = element_rect("darkcyan")) + 
+  geom_curve(aes(x = 10, y = 100, xend = 20, yend = 200), curvature = 1)+ 
+  draw_label("c", color = "white", size = 120, angle = 210, x = 1.095, y = 0.65)+ 
+  draw_label("by @GoldenB16117397 | source: TidyTuesday | Coffee ratings", color = "black", size = 14, angle = 0, x = 0, y = -1.42)
+
+coffee
+ggsave(here("plots","2020_28", "cofee.png"), 
+    width = 11.5, height = 7.25, units = 'in', dpi = 300)
+```
