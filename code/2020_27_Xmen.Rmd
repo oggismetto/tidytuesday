@@ -126,9 +126,9 @@ myplot <- ggraph(lay) +
 
 
 ggdraw() +
-  draw_image("/home/luca/Downloads/storm_sky.jpg") +
+  draw_image("https://www.outsideonline.com/sites/default/files/styles/full-page/public/2016/05/16/lightning-spots-main_h.jpg?itok=38FqgaCk")+#("/home/luca/Downloads/storm_sky.jpg") +
   draw_plot(myplot) +
-  theme(plot.margin = margin(-1, -1, -1, -1, "cm"))
+  theme(plot.margin = margin(-1.3, -1, -1.3, -1, "cm"))
 
 ggsave(here("plots","2020_27", "xmen.png"), 
        width = 10, height = 6, scale  = 1, dpi = 310, units = 'in')
