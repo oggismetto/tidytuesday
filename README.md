@@ -1,11 +1,12 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 Tidytuesday 😄
 =============
 
 My weekly commits for the tidytuesday project (<a href="https://github.com/rfordatascience/tidytuesday/" class="uri">https://github.com/rfordatascience/tidytuesday/</a>)
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-I’ve discovered this challenge during another challenge :D the
+I’ve discovered this challenge during another challenge :) the
 \#100DaysOfCode challenge. i’ve started during March 2020 quarantine for
 covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
@@ -20,9 +21,12 @@ the last one in time.
 Here’s too hot. Minds are melting. Ideas lacking. Hugs and kisses in
 X-men  
 \* learned using fuzzy join  
-\* learned using geom\_edge\_fan (pretty useful for the future)
+\* learned using geom\_edge\_fan (pretty useful for the future)  
+\* learned using magick to set an image as plot background, fun no?
 
-![Uncanny X-men](plots/2020_27/xmen.png)
+![Uncanny X-men](plots/2020_27/xmen.png) \#\#\# Year 2020 Episode 26:
+Caribou tracking  
+i found myself unable to face this
 
 ### Year 2020 Episode 25: African American History
 
@@ -178,7 +182,3 @@ plotted the age of the most winning teams.. Interesting? Well, it still
 demonstrates that 30+ doesnt mean you’re done.
 
 ![Tour de France](plots/2020_15/15_2020_tdf_winners.png)
-A line I wrote on my local computer
-A line I wrote on my local computer
-A line I wrote on my local computer
-adding a line
