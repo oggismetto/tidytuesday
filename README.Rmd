@@ -14,7 +14,7 @@ I've discovered this challenge during another challenge :) the #100DaysOfCode ch
 
 ### Year 2020 Episode 27: Uncanny X-men
 Here's too hot. Minds are melting. Ideas lacking. Hugs and kisses in X-men  
-* learned using fuzzy join   
+* learned using fuzzy join    
 * learned using geom_edge_fan (pretty useful for the future)  
 * learned using magick to set an image as plot background, fun no?
 
