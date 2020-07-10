@@ -106,7 +106,7 @@ myplot <- ggraph(lay) +
   geom_node_point(fill = "white", color = "black", pch=21, size = 5) +
   geom_node_text(aes(label = name), repel = TRUE, color = "black", family = "Avengeance Mightiest Avenger", size = 4) +
   scale_edge_color_manual(values = c("orange","red")) +
-  labs(title = "Hugs and Kisses in X-Men",
+  labs(title = "Hugs and Kisses in Uncanny X-Men",
        caption = "by @GoldenB16117397 | source: #TidyTuesday/Uncanny X-men",
        edge_color = "Interaction",
        edge_width = "number of times")+

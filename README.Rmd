@@ -16,6 +16,7 @@ I've discovered this challenge during another challenge :) the #100DaysOfCode ch
 Here's too hot. Minds are melting. Ideas lacking. Hugs and kisses in X-men  
 * learned using fuzzy join  
 * learned using geom_edge_fan (pretty useful for the future)  
+* learned using magick to set an image as plot background, fun no?
 
 ![Uncanny X-men](plots/2020_27/xmen.png)
 
