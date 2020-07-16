@@ -13,6 +13,10 @@ the last one in time.
 
 ### Year 2020 Episode 28: Coffee Ratings
 
+![Coffee Ratings](plots/2020_29/astronauts.png)
+
+### Year 2020 Episode 28: Coffee Ratings
+
 ![Coffee Ratings](plots/2020_28/cofee.png)
 
 ### Year 2020 Episode 27: Uncanny X-men
