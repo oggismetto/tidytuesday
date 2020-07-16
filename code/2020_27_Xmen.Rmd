@@ -1,0 +1,138 @@
+---
+title: "Xmen"
+author: "oggismetto"
+date: "10/07/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(ggraph)
+library(igraph)
+library(cowplot)
+library(magick)
+library(fuzzyjoin)
+
+# Get the Data
+characters <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-06-30/characters.csv')
+
+# font installation
+
+```
+
+* a network of good and bad feelings possibly with a new network package
+
+```{r}
+
+interactions <- characters %>%
+  select(character, on_a_date_with_which_character:explicitly_states_i_love_you_to_whom) %>%
+  pivot_longer(cols = 2:13) %>%
+  filter(value != "NA") %>%
+  separate(character, c("character"), sep = " = ", fill = "right") %>%
+  rename(action = name) %>%
+# these guys are present in the value column with their real names instead of secret identity
+  mutate(character = str_replace(character, "Marvel Girl/Phoenix", "Jean Grey"),
+         character = str_replace(character, "Ariel/Sprite/Shadowcat", "Kitty Pryde"),
+         character = str_replace(character, "Binary/Ms Marvel", "Carol Danvers"),
+         character = str_replace(character, "Moira MacTaggert \\(scientist helper\\)", "Moira MacTaggart"),
+         character = str_replace(character, "Phoenix\\(2\\)", "Jean Grey"))
+
+```
+
+# Im using fuzzyjoin from Dave Robinson to simplify the complexity of the value column
+# I won't consider all non-xmen characters for the network approach
+
+```{r}
+
+regexes <- tribble(
+  ~ regex, ~ category,
+  "Kitty", "Kitty Pryde",
+  "Wolverine", "Wolverine",
+  "Cyclops", "Cyclops",
+  "Jean Grey", "Jean Grey",
+  "Professor X", "Professor X",
+  "Colossus", "Colossus",
+  "Moira MacTaggart", "Moira MacTaggart",
+  "Storm", "Storm",
+  "Forge","Forge",
+  "Nightcrawler", "Nightcrawler",
+  "Rogue", "Rogue",
+  "Banshee", "Banshee",
+  "Carol Danvers", "Carol Danvers",
+  "Havok", "Havok",
+  "Jubilee", "Jubilee",
+  "Psylocke","Psylocke",
+  "Dazzler","Dazzler",
+  "Gambit","Gambit",
+  "Longshot","Longshot",
+  "Mystique","Mystique",
+  "Angel","Angel",
+  "Magneto","Magneto"
+)
+
+# edges
+test <- interactions %>%
+  regex_left_join(regexes, c(value = "regex")) %>%
+  select(character, action, category) %>%
+  filter(!is.na(category)) %>%
+  count(character, action, category, sort =T) %>%
+  filter(action %in% c("kiss_with_which_character", "hugging_with_which_character")) %>%
+  transmute(a = pmin(character, category),
+            b = pmax(character, category),
+            action, n) %>%
+  distinct(a,b, action, .keep_all = TRUE) %>%
+  mutate(action = str_replace(action, "hugging_with_which_character", "hugs"),
+         action = str_replace(action, "kiss_with_which_character", "kisses"))
+
+# nodes
+first <- distinct(as.data.frame(test$a))
+colnames(first) <- "name"
+sec <- distinct(as.data.frame(test$b))
+colnames(sec) <- "name"
+nodes <- unique(rbind(first, sec))
+
+# network
+net <- graph_from_data_frame(d=test, vertices=nodes, directed=F) 
+lay = create_layout(net, layout = "fr")
+
+myplot <- ggraph(lay) +
+  geom_edge_fan2(aes(edge_color = action, edge_width = n), strength = 2.4, alpha = 0.5) +
+  geom_node_point(fill = "white", color = "black", pch=21, size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, color = "black", family = "Avengeance Mightiest Avenger", size = 4) +
+  scale_edge_color_manual(values = c("orange","red")) +
+  labs(title = "Hugs and Kisses in Uncanny X-Men",
+       caption = "by @GoldenB16117397 | source: #TidyTuesday/Uncanny X-men",
+       edge_color = "Interaction",
+       edge_width = "number of times")+
+  theme_void() +
+  theme(
+  plot.margin = unit(rep(1.5, 4), "cm"),
+  plot.title = element_text(family = "Avengeance Mightiest Avenger",
+                            size = 22, 
+                            face = "bold",
+                            margin = margin(b = 8)),
+  plot.caption = element_text(family = "Avengeance Mightiest Avenger",
+                              size = 10,
+                              margin = margin(t = 25), 
+                              color = "#3D4852"),
+  legend.text = element_text(size=9, family = "Avengeance Mightiest Avenger"),
+  legend.title= element_text(size=10, family = "Avengeance Mightiest Avenger", face = "bold"))
+
+
+ggdraw() +
+  draw_image("https://www.outsideonline.com/sites/default/files/styles/full-page/public/2016/05/16/lightning-spots-main_h.jpg?itok=38FqgaCk")+#("/home/luca/Downloads/storm_sky.jpg") +
+  draw_plot(myplot) +
+  theme(plot.margin = margin(-1.3, -1, -1.3, -1, "cm"))
+
+ggsave(here("plots","2020_27", "xmen.png"), 
+       width = 10, height = 6, scale  = 1, dpi = 310, units = 'in')
+
+```
+
+

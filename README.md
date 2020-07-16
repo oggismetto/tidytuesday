@@ -1,4 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 Tidytuesday 😄
 =============
 
@@ -24,9 +25,12 @@ the last one in time.
 Here’s too hot. Minds are melting. Ideas lacking. Hugs and kisses in
 X-men  
 \* learned using fuzzy join  
-\* learned using geom\_edge\_fan (pretty useful for the future)
+\* learned using geom\_edge\_fan (pretty useful for the future)  
+\* learned using magick to set an image as plot background, fun no?
 
-![Uncanny X-men](plots/2020_27/xmen.png)
+![Uncanny X-men](plots/2020_27/xmen.png) \#\#\# Year 2020 Episode 26:
+Caribou tracking  
+i found myself unable to face this
 
 ### Year 2020 Episode 25: African American History
 

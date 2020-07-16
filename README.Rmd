@@ -16,8 +16,11 @@ I've discovered this challenge during another challenge :) the #100DaysOfCode ch
 Here's too hot. Minds are melting. Ideas lacking. Hugs and kisses in X-men  
 * learned using fuzzy join  
 * learned using geom_edge_fan (pretty useful for the future)  
+* learned using magick to set an image as plot background, fun no?
 
 ![Uncanny X-men](plots/2020_27/xmen.png)
+### Year 2020 Episode 26: Caribou tracking  
+i found myself unable to face this 
 
 ### Year 2020 Episode 25: African American History
 This week was so frustrating. I had only complex ideas crazy to realize. This is one example of one idea not working out as expected.
