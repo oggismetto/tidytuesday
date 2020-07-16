@@ -101,7 +101,8 @@ dispersion_plot <- dispersion_by_sex %>%
   geom_jitter(aes(sex, age, color = year_of_birth), alpha = 0.5) + 
   scale_color_gradient(low = "red", high ="yellow") +
   scale_fill_manual(values = c("white", "grey")) +
-  theme(plot.background = element_rect(fill = "gray87"),
+  theme(plot.title.position = "plot",
+        plot.background = element_rect(fill = "gray87"),
         plot.title = element_text(size = 24, family = "Space Mono"),
         plot.subtitle = element_text(size = 16, family = "Space Mono"),
         plot.caption = element_text(size = 16, family = "Space Mono"),
@@ -129,7 +130,8 @@ outliers_plot <- outliers_by_sex %>%
   facet_wrap(~sex, scales = "free_y") +
   coord_flip()+
   theme_minimal()+
-  theme(plot.background = element_rect(fill = "gray87"),
+  theme(plot.title.position = "plot",
+        plot.background = element_rect(fill = "gray87"),
         plot.title = element_text(size = 24, family = "Space Mono"),
         plot.subtitle = element_text(size = 16, family = "Space Mono"),
         plot.caption = element_text(size = 16, family = "Space Mono"),
