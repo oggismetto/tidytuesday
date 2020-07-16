@@ -1,0 +1,161 @@
+---
+title: "Xmen"
+author: "oggismetto"
+date: "02/07/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(patchwork)
+
+# Get the Data
+astronauts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-14/astronauts.csv')
+
+```
+
+# identify the type of data
+# measures of center
+# measures of spread
+
+for day1 of #30daysofstats with #tidytuesday
+
+```{r}
+
+View(astronauts)
+
+astronauts %>%
+  count(sex)
+
+# measures of center
+# mean, median, mode
+# measures of spread
+# variance, sd, mad, quartiles, quantiles, interquartile range, outliers
+
+```
+
+Let's calculate the mean/median/mode of the age of astronauts and plot it
+
+```{r}
+
+by_sex <- astronauts %>%
+  select(name, sex, year_of_birth, year_of_mission) %>%
+  distinct() %>%
+  arrange(name) %>%
+  mutate(age = year_of_mission - year_of_birth) %>%
+  group_by(sex)
+
+mean_median <- by_sex %>%  summarize(n = n(), 
+            mean_age = mean(age),
+            meadian_age = median(age)) %>%
+  rename(n_missions = n)
+
+mode <- by_sex %>%
+  count(age, sort = T) %>%
+  top_n(1) %>%
+  rename(mode = age) %>%
+  select(-n)
+
+center_measures <- left_join(mean_median, mode)
+
+```
+
+# Lets now calculate the measures of spread
+
+```{r}
+
+# outliers
+dispersion_by_sex <- by_sex %>%
+  mutate(dist = age - mean(age),
+         variance = var(age),
+         sd_age = sd(age),
+           MAD = mean(abs(dist)),
+         iqr_range = quantile(age, 0.75) - quantile(age, 0.25)) 
+
+dispersion <- dispersion_by_sex %>%
+  distinct(sex, variance, sd_age, MAD, iqr_range)
+
+outliers_by_sex <- dispersion_by_sex %>%
+  mutate(lower_threshold = quantile(age, 0.25) - iqr_range * 1.5,
+         upper_threshold = quantile(age, 0.75) + iqr_range * 1.5) %>%
+  distinct(name, sex, age, lower_threshold, upper_threshold) %>%
+  mutate(outlier = ifelse(age < lower_threshold | age > upper_threshold, "Yes", "No")) %>%
+  filter(outlier == "Yes")
+
+```
+
+# plot the data
+
+```{r}
+
+dispersion_plot <- dispersion_by_sex %>%
+  ggplot() +
+  geom_boxplot(aes(sex, age, fill = sex)) +
+  theme_minimal() +
+  geom_jitter(aes(sex, age, color = year_of_birth), alpha = 0.5) + 
+  scale_color_gradient(low = "red", high ="yellow") +
+  scale_fill_manual(values = c("white", "grey")) +
+  theme(plot.background = element_rect(fill = "gray87"),
+        plot.title = element_text(size = 24, family = "Space Mono"),
+        plot.subtitle = element_text(size = 16, family = "Space Mono"),
+        plot.caption = element_text(size = 16, family = "Space Mono"),
+        legend.title = element_text(size = 16, family = "Space Mono"),
+        axis.title = element_text(size = 16, family = "Space Mono"),
+        axis.text.x = element_text(size = 16, family = "Space Mono"),
+        axis.text.y = element_text(size = 10, family = "Space Mono"),
+        legend.text =  element_text(size = 16, family = "Space Mono")) +
+  labs(title = "Astronaut stats by sex",
+       subtitle = "Day 1/30 : Training with dispersion measures #30daysofstats",
+       x = "",
+       y = "Age",
+       fill = "sex",
+       color = "year of birth")
+```
+
+Plot outliers
+
+```{r}
+
+outliers_plot <- outliers_by_sex %>%
+  mutate(type = ifelse(age > lower_threshold, "Upper", "Lower")) %>%
+  ggplot() +
+  geom_point(aes(x = reorder(name, age), y = age, color = type), size = 5, alpha = 0.7) +
+  facet_wrap(~sex, scales = "free_y") +
+  coord_flip()+
+  theme_minimal()+
+  theme(plot.background = element_rect(fill = "gray87"),
+        plot.title = element_text(size = 24, family = "Space Mono"),
+        plot.subtitle = element_text(size = 16, family = "Space Mono"),
+        plot.caption = element_text(size = 16, family = "Space Mono"),
+        legend.title = element_text(size = 16, family = "Space Mono"),
+        axis.title = element_text(size = 16, family = "Space Mono"),
+        axis.text.x = element_text(size = 10, family = "Space Mono"),
+        axis.text.y = element_text(size = 10, family = "Space Mono"),
+        legend.text =  element_text(size = 16, family = "Space Mono"),
+        strip.text.x = element_text(size = 16, family = "Space Mono")) +
+  scale_color_manual(values = c("black", "navyblue")) +
+  scale_fill_manual(values = c("white", "grey"))+
+  labs(title = "Astronaut Outliers",
+       x = "Astronauts",
+       y = "Age",
+       color = "Type of Outlier",
+       caption = "by @GoldenB16117397 | source: TidyTuesday | Astronauts")
+
+```
+
+
+```{r}
+dispersion_plot / outliers_plot
+
+ggsave(here("plots","2020_29", "astronauts.png"), 
+    width = 12, height = 10, units = 'in', dpi = 300)
+
+```
+
