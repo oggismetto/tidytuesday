@@ -16,7 +16,7 @@ library(here)
 library(tidytuesdayR)
 library(patchwork)
 
-# Get the Data
+#1  Get the Data
 astronauts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-14/astronauts.csv')
 
 ```

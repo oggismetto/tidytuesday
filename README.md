@@ -1,5 +1,4 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 Tidytuesday 😄
 =============
 
@@ -11,10 +10,6 @@ I’ve discovered this challenge during another challenge :) the
 covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
-
-### Year 2020 Episode 28: Coffee Ratings
-
-![Astronauts](plots/2020_29/astronauts.png)
 
 ### Year 2020 Episode 28: Coffee Ratings
 
