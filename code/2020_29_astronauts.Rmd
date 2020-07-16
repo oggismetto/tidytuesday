@@ -24,7 +24,6 @@ astronauts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience
 # identify the type of data
 # measures of center
 # measures of spread
-
 for day1 of #30daysofstats with #tidytuesday
 
 ```{r}
