@@ -1,0 +1,45 @@
+---
+title: "Astronauts"
+author: "oggismetto"
+date: "16/07/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(patchwork)
+
+#1  Get the Data
+animal_outcomes <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-21/animal_outcomes.csv')
+brisbane_complaints <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-21/brisbane_complaints.csv')
+
+```
+
+* logically thinking this is the first week im gonna make a map
+https://geocompr.robinlovelace.net/adv-map.html
+https://slcladal.github.io/maps.html
+
+# statistical thinking
+* what's the distribution?
+* should i figure out if this data can be modeled?
+
+```{r}
+
+animal_outcomes  %>%
+  ggplot(aes(x = year, y = Total)) +
+  geom_density(aes(fill = animal_type))
+
+animal_outcomes %>%
+  count(animal_type, sort = T)
+
+animal_outcomes %>%
+  count(year, animal_type, outcome, sort = T)
+```
+
