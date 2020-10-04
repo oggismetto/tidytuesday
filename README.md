@@ -11,7 +11,7 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
-### Year 2020 Episode 40: Coffee Ratings
+### Year 2020 Episode 40: Beyoncé and Taylor Swift Lyrics
 
 ![Coffee Ratings](plots/2020_40/Beyonce_Swift.png)
 
