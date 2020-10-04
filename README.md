@@ -11,6 +11,10 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2020 Episode 40: Coffee Ratings
+
+![Coffee Ratings](plots/2020_40/Beyonce_Swift.png)
+
 ### Year 2020 Episode 28: Coffee Ratings
 
 ![Coffee Ratings](plots/2020_29/astronauts.png)
