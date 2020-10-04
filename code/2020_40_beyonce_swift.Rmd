@@ -59,7 +59,7 @@ best_sellers %>%
 install.packages("hrbrthemes")
 library(hrbrthemes)
 
-top1_n_countries <- best_sellers %>%
+top_n_countries <- best_sellers %>%
   group_by(artist) %>%
   top_n(5, sales) %>%
   inner_join(charts, by = "title") %>%
@@ -70,7 +70,7 @@ top1_n_countries <- best_sellers %>%
   filter(chart_position == 1) %>%
   count(artist, title)
 
-top1_n_countries %>%
+top_n_countries %>%
   ggplot() +
   geom_col(aes(x = reorder(title, n), y = n, fill = sales)) +
   facet_wrap(~artist, scales = "free_y") +
