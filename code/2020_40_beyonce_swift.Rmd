@@ -1,0 +1,103 @@
+---
+title: "Astronauts"
+author: "oggismetto"
+date: "16/07/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(patchwork)
+
+#1  Get the Data
+beyonce_lyrics <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-29/beyonce_lyrics.csv')
+taylor_swift_lyrics <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-29/taylor_swift_lyrics.csv')
+sales <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-29/sales.csv')
+charts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-29/charts.csv')
+
+```
+
+# who sold more?
+```{r}
+
+theme_set(theme_light())
+
+library(lubridate)
+
+best_sellers <- sales %>%
+  select(artist, title, country, sales, released) %>%
+  mutate(released  = str_remove(released, " \\(.*")) %>%
+  mutate(released = mdy (released)) %>%
+  filter(!is.na(sales)) %>%
+  group_by(artist, title) %>%
+  summarize(sales = sum(sales)) %>%
+  ungroup() %>%
+  group_by(artist)  %>%
+  arrange(artist, -sales)
+  
+best_sellers %>%
+  ggplot() +
+  geom_col(aes(x = reorder(title, sales), y = sales, fill = artist)) +
+  coord_flip() +
+  scale_y_continuous(labels = scales::dollar_format()) +
+  labs(title = "Who sold more ?",
+       x = "albums", 
+       y = "sales income")
+
+```
+
+# best 5 sellers top 1 chart positions in how many countries?
+```{r}
+
+install.packages("hrbrthemes")
+library(hrbrthemes)
+
+top1_n_countries <- best_sellers %>%
+  group_by(artist) %>%
+  top_n(5, sales) %>%
+  inner_join(charts, by = "title") %>%
+  select(artist = artist.x, title, label, chart, chart_position, sales) %>%
+  group_by(artist, title, sales, chart) %>%
+  summarize(chart_position = min(as.numeric(chart_position))) %>%
+  distinct() %>%
+  filter(chart_position == 1) %>%
+  count(artist, title)
+
+top1_n_countries %>%
+  ggplot() +
+  geom_col(aes(x = reorder(title, n), y = n, fill = sales)) +
+  facet_wrap(~artist, scales = "free_y") +
+  coord_flip()+
+  labs(subtitle = "Number of countries where the top 5 best seller albums were ranked first and their revenue",
+       title = "Beyoncé and Taylor Swift worldwide",
+       fill = "Sales ($)",
+       caption = "by @GoldenB16117397 | source: #TidyTuesday/Beyoncé and Taylor Swift Lyrics",
+       y = "number of countries",
+       x = "albums") +
+  scale_fill_viridis_b(labels = scales::dollar_format()) +
+  theme_ft_rc()+
+  theme(plot.title.position = "plot",
+        plot.title = element_text(size = 24, family = "Space Mono"),
+        plot.subtitle = element_text(size = 16, family = "Space Mono"),
+        plot.caption = element_text(size = 16, family = "Space Mono"),
+        legend.title = element_text(size = 16, family = "Space Mono"),
+        axis.title = element_text(size = 16, family = "Space Mono"),
+        axis.text.x = element_text(size = 10, family = "Space Mono"),
+        axis.text.y = element_text(size = 10, family = "Space Mono"),
+        legend.text =  element_text(size = 16, family = "Space Mono"),
+        strip.text.x = element_text(size = 16, family = "Space Mono"),
+        axis.title.x = element_text(size = 16, family = "Space Mono"),
+        axis.title.y = element_text(size = 16, family = "Space Mono"))
+
+ggsave(here("plots","2020_40", "Beyonce_Swift.png"), 
+       width = 14, height = 6, scale  = 1, dpi = 310, units = 'in')
+
+```
+
