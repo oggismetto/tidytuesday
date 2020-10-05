@@ -98,7 +98,7 @@ top_n_countries %>%
         axis.title.x = element_text(size = 16, family = "Space Mono"),
         axis.title.y = element_text(size = 16, family = "Space Mono"))
 
-ggsave(here("plots","2020_40", "Beyonce_Swift.png"), 
+ggsave(here("plots","2020_40", "Beyonce_Swift_lyrics.png"), 
        width = 14, height = 6, scale  = 1, dpi = 310, units = 'in')
 
 ```

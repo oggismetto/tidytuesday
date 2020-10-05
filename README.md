@@ -13,7 +13,7 @@ the last one in time.
 
 ### Year 2020 Episode 40: Beyoncé and Taylor Swift Lyrics
 
-![Coffee Ratings](plots/2020_40/Beyonce_Swift.png)
+![Coffee Ratings](plots/2020_40/Beyonce_Swift_lyrics.png)
 
 ### Year 2020 Episode 28: Coffee Ratings
 
