@@ -70,6 +70,9 @@ top_n_countries <- best_sellers %>%
   filter(chart_position == 1) %>%
   count(artist, title)
 
+# gargano palette
+my_palette <- c("#68B8C3", "#ADD0DA", "#CCDBDB", "#D5C1A8", "#637127")
+
 top_n_countries %>%
   ggplot() +
   geom_col(aes(x = reorder(title, n), y = n, fill = sales)) +
@@ -81,8 +84,8 @@ top_n_countries %>%
        caption = "by @GoldenB16117397 | source: #TidyTuesday/Beyoncé and Taylor Swift Lyrics",
        y = "number of countries",
        x = "albums") +
-  scale_fill_viridis_b(labels = scales::dollar_format()) +
-  theme_ft_rc()+
+  scale_fill_gradientn(colours = my_palette, labels = scales::dollar_format()) +
+#  scale_fill_viridis_b(labels = scales::dollar_format()) +
   theme(plot.title.position = "plot",
         plot.title = element_text(size = 24, family = "Space Mono"),
         plot.subtitle = element_text(size = 16, family = "Space Mono"),
