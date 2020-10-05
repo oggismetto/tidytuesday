@@ -85,7 +85,6 @@ top_n_countries %>%
        y = "number of countries",
        x = "albums") +
   scale_fill_gradientn(colours = my_palette, labels = scales::dollar_format()) +
-#  scale_fill_viridis_b(labels = scales::dollar_format()) +
   theme(plot.title.position = "plot",
         plot.title = element_text(size = 24, family = "Space Mono"),
         plot.subtitle = element_text(size = 16, family = "Space Mono"),
