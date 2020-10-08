@@ -11,11 +11,15 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2020 Episode 41: NCAA Women’s Basketball Tournament
+
+![Coffee Ratings](plots/2020_41/ncaa.png)
+
 ### Year 2020 Episode 40: Beyoncé and Taylor Swift Lyrics
 
 ![Coffee Ratings](plots/2020_40/Beyonce_Swift_lyrics.png)
 
-### Year 2020 Episode 28: Coffee Ratings
+### Year 2020 Episode 28: Astronauts
 
 ![Coffee Ratings](plots/2020_29/astronauts.png)
 

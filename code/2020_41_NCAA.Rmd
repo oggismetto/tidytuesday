@@ -1,0 +1,69 @@
+---
+title: "NCAA"
+author: "oggismetto"
+date: "08/10/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(scales)
+theme_set(theme_light())
+
+#1  Get the Data
+
+tuesdata <- tidytuesdayR::tt_load(2020, week = 41)
+tournament <- tuesdata$tournament
+
+```
+
+# which conference has the highest winning ratio over its participations?? >10 participation over decade?
+
+```{r}
+
+win_ratio <- tournament %>%
+  mutate(decade = year %/% 10 * 10) %>%
+  select(decade, conference, school, tourney_finish) %>%
+  distinct() %>%
+  group_by(decade, conference) %>%
+  summarize (n = n(),
+             wins = mean(tourney_finish %in% "Champ")) %>%
+  arrange(-wins) %>%
+  mutate(across(where(is.numeric), ~ round(., digits = 2)))
+
+win_ratio %>%
+  filter(n > 10) %>%
+  ggplot(aes(x = conference, y = decade, fill = wins)) + 
+  geom_tile() +
+  scale_fill_gradient2(low = "blue", high = "darkred", labels = percent) +
+  theme(panel.grid = element_blank(),
+        axis.ticks = element_blank()) +
+  coord_flip()+
+  theme(plot.title.position = "plot",
+        plot.title = element_text(size = 24, family = "Purisa"),
+        plot.subtitle = element_text(size = 16, family = "Purisa"),
+        plot.caption = element_text(size = 16, family = "Purisa"),
+        legend.title = element_text(size = 16, family = "Purisa"),
+        axis.title = element_text(size = 16, family = "Purisa"),
+        axis.text.x = element_text(size = 10, family = "Purisa"),
+        axis.text.y = element_text(size = 10, family = "Purisa"),
+        legend.text =  element_text(size = 16, family = "Purisa"),
+        strip.text.x = element_text(size = 16, family = "Purisa")) +
+  labs(title = "NCAA - Conference winning rate by decade",
+       subtitle = "Percent wins for >10 participation/decade",
+       x = "Conference",
+       y = "Decades",
+       fill = "% wins",
+       caption = "by @GoldenB16117397 | source: TidyTuesday | NCAA Women's Basketball Tournament")
+
+ggsave(here("plots","2020_41", "ncaa.png"), 
+    width = 12, height = 10, units = 'in', dpi = 300)
+
+```
