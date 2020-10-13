@@ -11,6 +11,10 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2020 Episode 41: Datasaurus dozens
+
+![datasaurus](plots/2020_42/datasaurus.gif)
+
 ### Year 2020 Episode 41: NCAA Women’s Basketball Tournament
 
 ![Coffee Ratings](plots/2020_41/ncaa.png)

@@ -1,0 +1,62 @@
+---
+title: "Datasaurus"
+author: "oggismetto"
+date: "13/10/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(scales)
+theme_set(theme_light())
+
+#1  Get the Data
+
+tuesdata <- tidytuesdayR::tt_load(2020, week = 42)
+datasaurus_dozen <- tuesdata$datasaurus
+datasaurus_dozen %>%
+  filter(dataset == "dino") %>%
+  ggplot(aes(x = x,y = y)) +
+  geom_point(color = "darkgreen")+
+  theme_void()+
+  theme(legend.position = "none")
+
+datasaurus_dozen %>%
+  filter(dataset == "dino") %>%
+  mutate(y1 = ifelse(y < 50 & y > 25 & x < 60, y-2,y)) %>%
+  ggplot(aes(x = x,y = y1)) +
+  geom_point(aes(color = y < 50 & y > 25 & x < 60))+
+  theme_void()+
+  theme(legend.position = "none")
+
+close_mouth <- datasaurus_dozen %>%
+  filter(dataset == "dino") %>%
+  transmute(dataset = "dino2", x, y = ifelse(y < 50 & y > 25 & x < 60, y-2,y))
+
+open_mouth <- datasaurus_dozen %>%
+  filter(dataset == "dino") %>%
+  transmute(dataset = "dino3", x, y = ifelse(y < 50 & y > 25 & x < 60, y+2,y))
+
+dino_animated <- bind_rows(close_mouth,open_mouth)
+
+scatter = dino_animated %>%
+    ggplot(aes(x = x, y = y)) + 
+    geom_point() +
+    theme_void()  +
+    transition_states(dataset, wrap = T,
+                      transition_length = 1,
+                      state_length = 1)
+
+animate(scatter, nframes = 12)
+
+anim_save("/scratch/git/tidytuesday/plots/2020_42/datasaurus.gif", 
+          animation = last_animation())
+
+```
