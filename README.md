@@ -23,6 +23,10 @@ the last one in time.
 
 ![Coffee Ratings](plots/2020_40/Beyonce_Swift_lyrics.png)
 
+### Year 2020 Episode 36: Datasaurus dozens
+
+![datasaurus](plots/2020_36/Wheat_Yield.png)
+
 ### Year 2020 Episode 28: Astronauts
 
 ![Coffee Ratings](plots/2020_29/astronauts.png)
