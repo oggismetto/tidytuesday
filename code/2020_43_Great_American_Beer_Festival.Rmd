@@ -1,0 +1,86 @@
+---
+title: "Datasaurus"
+author: "oggismetto"
+date: "13/10/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(scales)
+library(ggcorrplot)
+
+#1  Get the Data
+
+tuesdata <- tidytuesdayR::tt_load(2020, week = 43)
+beer_awards <- tuesdata$beer_awards
+
+beer_awards
+
+```
+
+
+```{r}
+
+library(tidyverse)
+
+beer_awards %>%
+  count(category, sort = T)
+
+beer_counts <- beer_awards %>%
+  count(beer_name, brewery, medal, city, state)
+
+brewery <- beer_counts %>%
+  pivot_wider(names_from = medal, values_from = n,
+              values_fill = list(n = 0)) %>%
+  mutate(total = Bronze + Silver + Gold) %>%
+  filter(total >= 5) %>%
+  group_by(brewery) %>%
+  summarize(across(Silver:Bronze, sum))
+
+test <- brewery %>%
+  as.data.frame()
+rownames(test) <- test$brewery
+test$brewery <- NULL
+
+test
+
+corr <- round(cor(t(test)),1)
+
+# ggcorrplot(corr, method = "circle")
+#ggcorrplot(corr, hc.order = TRUE, outline.col = "white")
+#ggcorrplot(corr, hc.order = TRUE, type = "upper",
+#     outline.col = "white")
+
+ggcorrplot(corr, hc.order = TRUE, type = "lower",
+   lab = TRUE) +
+  labs(subtitle = "Correlogram of the breweries with >5 medals based on the type and number of medals won",
+       title = "Great American Beer Festival Data",
+       caption = "by @GoldenB16117397 | source: #TidyTuesday/Great American Beer Festival Data",
+       y = "",
+       x = "") +
+  theme(plot.title.position = "plot",
+        plot.title = element_text(size = 24, family = "Arial"),
+        plot.subtitle = element_text(size = 16, family = "Arial"),
+        plot.caption = element_text(size = 16, family = "Arial"),
+        legend.title = element_text(size = 16, family = "Arial"),
+        axis.title = element_text(size = 16, family = "Arial"),
+        axis.text.x = element_text(size = 10, family = "Arial"),
+        axis.text.y = element_text(size = 10, family = "Arial"),
+        legend.text =  element_text(size = 16, family = "Arial"),
+        strip.text.x = element_text(size = 16, family = "Arial"),
+        axis.title.x = element_text(size = 16, family = "Arial"),
+        axis.title.y = element_text(size = 16, family = "Arial"))
+
+ggsave(here("plots","2020_43", "great_american_beer_festival.png"), 
+       width = 14, height = 10, scale  = 1, dpi = 310, units = 'in')
+
+```
+

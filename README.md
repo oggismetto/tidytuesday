@@ -13,6 +13,10 @@ the last one in time.
 
 ### Year 2020 Episode 41: Datasaurus dozens
 
+![datasaurus](plots/2020_43/great_american_beer_festival.png)
+
+### Year 2020 Episode 42: Datasaurus dozens
+
 ![datasaurus](plots/2020_42/datasaurus.gif)
 
 ### Year 2020 Episode 41: NCAA Women’s Basketball Tournament
