@@ -54,7 +54,7 @@ tree <- ggplot(segment(ddata_x)) +
   scale_y_reverse(expand=c(0.2, 0)) + 
   theme(
     plot.title = element_text(family = "Arial", colour = "#003399", size = 24, face = "bold"),
-    plot.subtitle = element_text(family = "Arial", colour = "#ffcc00", face = "bold", size = 20, margin = margin(t = 10, b = 22)),
+    plot.subtitle = element_text(family = "Arial", colour = "#ffcc00", face = "bold", size = 20, margin = margin(t = 10, b = 42)),
     axis.line.y=element_blank(),
     axis.ticks.y=element_blank(),
     axis.text.y=element_blank(),
@@ -67,14 +67,14 @@ tree <- ggplot(segment(ddata_x)) +
 
 
 ggdraw(tree) +
-  draw_image(here("other", "imgs", "1.jpg"), hjust = 0, x = 0.27, y = 0.35, scale = 0.2)+
+  draw_image(here("other", "imgs", "1.jpg"), hjust = 0, x = 0.27, y = 0.33, scale = 0.2)+
   draw_image(here("other", "imgs", "0645052_PE703185_S4.jpg"), hjust = 0, x = 0.27, y = -0.4, scale = 0.2) + 
-  draw_label("A TV bench,\n180x42x39 cm", color = "black", size = 10, angle = 0, x = 0.76, y = 0.8)+ 
+  draw_label("A TV bench,\n180x42x39 cm", color = "black", size = 10, angle = 0, x = 0.76, y = 0.78)+ 
   draw_label("A TV storage in combination \nwith glass doors 300x40x230 cm", color = "black", size = 10, angle = 0, x = 0.78, y = 0.22)
 
 
 ggsave(here("plots","2020_44","ikea.png"),
-       width = 10, height = 8, units = 'in', dpi = 300)
+       width = 10, height = 10.5, units = 'in', dpi = 300)
 
 
 ```
