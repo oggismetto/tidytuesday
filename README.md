@@ -11,9 +11,13 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2020 Episode 44: IKEA
+
+![ikea](plots/2020_44/ikea.png)
+
 ### Year 2020 Episode 43: The Great American Beer Festival
 
-![datasaurus](plots/2020_43/great_american_beer_festival.png)
+![thegreatamericanbeerfestival](plots/2020_43/great_american_beer_festival.png)
 
 ### Year 2020 Episode 42: Datasaurus dozens
 
@@ -21,7 +25,7 @@ the last one in time.
 
 ### Year 2020 Episode 41: NCAA Women’s Basketball Tournament
 
-![Coffee Ratings](plots/2020_41/ncaa.png)
+![NCAA](plots/2020_41/ncaa.png)
 
 ### Year 2020 Episode 40: Beyoncé and Taylor Swift Lyrics
 

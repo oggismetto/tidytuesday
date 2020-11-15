@@ -1,0 +1,80 @@
+---
+title: "ikea"
+author: "oggismetto"
+date: "03/11/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(scales)
+library(ape)
+
+#1  Get the Data
+tuesdata <- tidytuesdayR::tt_load(2020, week = 45)
+ikea <- tuesdata$ikea
+
+```
+
+```{r}
+library(ggdendro)
+library(cowplot)
+
+ikea <- ikea %>%
+  mutate(item_id = as.character(item_id))
+
+ikea_besta <- ikea %>%
+  select(item_id, name, depth, width, height) %>%
+  filter(name == "BESTÅ", !is.na(depth), !is.na(height), !is.na(width)) %>%
+  select(-name) %>%
+  distinct() %>%
+  column_to_rownames("item_id") 
+
+hclust <- hclust(dist(ikea_besta))
+ddata_x <- dendro_data(hclust)
+
+labs <- label(ddata_x) %>%
+  left_join(ikea, by = c("label" = "item_id")) %>%
+  select(x,y,label, category, link)
+
+tree <- ggplot(segment(ddata_x)) +
+  geom_segment(aes(x=x, y=y, xend=xend, yend=yend)) +
+  geom_text(data=labs,aes(label=label, x=x, y=0, colour=category), hjust=0, size = 2)+
+  coord_flip() + 
+  labs(title= "One hundred seventy-three IKEA objects named BESTÅ",
+       subtitle = "A size-based tree map guide to buy a BESTÅ series object",
+       caption = "by @GoldenB16117397 | source: #TidyTuesday/Kaggle & Kaggle | IKEA") +
+  scale_y_reverse(expand=c(0.2, 0)) + 
+  theme(
+    plot.title = element_text(family = "Arial", colour = "#003399", size = 24, face = "bold"),
+    plot.subtitle = element_text(family = "Arial", colour = "#ffcc00", face = "bold", size = 20, margin = margin(b = 22)),
+    axis.line.y=element_blank(),
+    axis.ticks.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.title.y=element_blank(),
+    panel.background=element_rect(fill="white"), 
+    plot.background = element_rect(fill="white"),
+    legend.background = element_rect(fill="white"),
+    panel.grid=element_blank(),
+    plot.caption=element_text(hjust = 0))
+
+
+ggdraw(tree) +
+  draw_image(here("other", "imgs", "1.jpg"), hjust = 0, x = 0.27, y = 0.35, scale = 0.2)+
+  draw_image(here("other", "imgs", "0645052_PE703185_S4.jpg"), hjust = 0, x = 0.27, y = -0.4, scale = 0.2) + 
+  draw_label("A TV bench,\n180x42x39 cm", color = "black", size = 10, angle = 0, x = 0.76, y = 0.8)+ 
+  draw_label("A TV storage in combination \nwith glass doors 300x40x230 cm", color = "black", size = 10, angle = 0, x = 0.78, y = 0.22)
+
+
+ggsave(here("plots","2020_44","ikea.png"),
+       width = 9, height = 8, units = 'in', dpi = 300)
+
+
+```
