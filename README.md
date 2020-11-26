@@ -11,6 +11,10 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2020 Episode 48: Hiking
+
+![hiking](plots/2020_48/WashingtonHiking.png)
+
 ### Year 2020 Episode 44: IKEA
 
 ![ikea](plots/2020_44/ikea.png)

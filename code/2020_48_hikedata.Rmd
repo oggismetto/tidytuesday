@@ -1,0 +1,65 @@
+---
+title: "Phone history"
+author: "oggismetto"
+date: "10/11/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(scales)
+
+#1  Get the Data
+tuesdata <- tidytuesdayR::tt_load(2020, week = 48)
+hike_data <- tuesdata$hike_data
+```
+
+```{r}
+
+# clean the data credits to Alex Cookson
+high_data_clean <- 
+  hike_data %>%
+  distinct(name, location, .keep_all = TRUE) %>%
+  rowid_to_column("trail_id") %>%
+  #mutate(across(.cols = c(length, gain, highpoint, rating), parse_number))
+  mutate_at(.vars = c("length", "gain", "highpoint", "rating"), parse_number) %>%
+  rename(length_miles = length,
+         gain_ft = gain,
+         highpoint_ft = highpoint) %>%
+  mutate(rating = ifelse(rating == 0, NA, rating))
+
+```
+
+```{r}
+
+by_location <- 
+  high_data_clean %>% 
+  select(trail_id, location, length_miles:rating) %>%
+  filter(!is.na(rating)) %>%
+  add_count(location) %>%
+  filter(n > 25)
+
+by_location %>%
+  separate(location, into = c("macroarea", "microarea"), sep = " -- ") %>%
+  mutate(microarea = fct_reorder(microarea, rating)) %>%
+  ggplot(aes(x = microarea, y = rating, color = macroarea)) +
+  geom_boxplot(alpha = .7) +
+  geom_jitter(alpha = .2) +
+  theme_light() +
+  coord_flip() +
+  labs(title = "Ratings per location split by macroareas",
+       x = "", y = "",
+       caption = "by @GoldenB16117397 | source: TidyTuesday | Washington Hiking",
+       color = "Macroarea")
+  
+ggsave(here("plots","2020_48", "WashingtonHiking.png"), 
+       width = 8, height = 10, scale  = 1, dpi = 310, units = 'in')
+
+```
+
