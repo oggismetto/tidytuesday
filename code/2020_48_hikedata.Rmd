@@ -54,6 +54,7 @@ by_location %>%
   theme_light() +
   coord_flip() +
   labs(title = "Ratings per location split by macroareas",
+       subtitle = "Filtered for locations with > 25 trails",
        x = "", y = "",
        caption = "by @GoldenB16117397 | source: TidyTuesday | Washington Hiking",
        color = "Macroarea")
