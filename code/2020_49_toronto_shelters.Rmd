@@ -44,7 +44,7 @@ by_organization <-
 by_organization %>%
   mutate(organization_name = fct_reorder(organization_name, ratio_occupancy)) %>%
   ggplot(aes(x= date, y = organization_name, fill = ratio_occupancy)) +
-  geom_tile() +
+  geom_tile(color = "white") +
   scale_fill_gradient2(low = "green2", mid = "yellow", high = "red3", midpoint = 0.6, labels = percent_format())  +
   facet_wrap(~sector, nrow = 1) +
   labs(title = "Toronto Shelter Occupancy Over Time",
@@ -70,7 +70,7 @@ by_organization %>%
         plot.caption = element_text(color = "white", family = "DejaVu Serif"))
 
 ggsave(here("plots", "2020_49", "Toronto_shelters.png"), 
-       width = 12, height = 6, scale = 1, dpi = 300, units = "in")
+       width = 12, height = 7, scale = 1, dpi = 300, units = "in")
 
 ```
 
