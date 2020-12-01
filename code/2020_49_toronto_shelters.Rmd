@@ -1,0 +1,76 @@
+---
+title: "Toronto Shelters"
+author: "oggismetto"
+date: "01/12/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(scales)
+library(moderndive)
+library(lubridate)
+
+#1  Get the Data
+tuesdata <- tidytuesdayR::tt_load(2020, week = 49)
+shelters_data <- tuesdata$shelters
+
+```
+
+* can be simplified by month
+* see the ratio of the occupancy (%) over time for shelters split by sector/shelter name-adderess
+* make maybe a map of the shelters
+
+```{r}
+
+by_organization <- 
+  shelters_data %>%
+  filter(!is.na(capacity), !is.na(occupancy)) %>%
+  filter(!capacity == 0) %>%
+  select(-id) %>%
+  mutate(year = year(occupancy_date),
+         date = floor_date(occupancy_date, "month")) %>%
+  group_by(organization_name, sector, date) %>%
+  summarize(across(c(occupancy,capacity), mean)) %>%
+  mutate(ratio_occupancy = occupancy/capacity) %>%
+  ungroup() 
+
+by_organization %>%
+  mutate(organization_name = fct_reorder(organization_name, ratio_occupancy)) %>%
+  ggplot(aes(x= date, y = organization_name, fill = ratio_occupancy)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "green2", mid = "yellow", high = "red3", midpoint = 0.6, labels = percent_format())  +
+  facet_wrap(~sector, nrow = 1) +
+  labs(title = "Toronto Shelter Occupancy Over Time",
+       subtitle = "Breakdown by organization and sector", 
+       x = "", y = "Organization", fill = "Occupancy (%)",
+       caption = "by @GoldenB16117397 | source: TidyTuesday | Toronto Shelters") +
+  theme_light() +
+  theme(panel.grid = element_blank(),
+        plot.margin = unit(rep(1, 4), "cm"),
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title.position = "plot", 
+        strip.text.x = element_text(size = 12, color = "white", face = "bold",family = "DejaVu Serif"),
+        strip.background = element_rect(color="grey", fill="#4C4C4C", size=1.5, linetype="solid"),
+        plot.title = element_text(color = "white", size = 24, face = "bold", family = "DejaVu Serif"),
+        plot.subtitle = element_text(color = "white", size = 16, family = "DejaVu Serif", margin = margin(b = 15)),
+        legend.text = element_text(color = "white", family = "DejaVu Serif"),
+        legend.title = element_text(color = "white", family = "DejaVu Serif", margin = margin(b = 8)),
+        legend.background =  element_rect(fill = "#4C4C4C"),
+        axis.text = element_text(color = "white", family = "DejaVu Serif"),
+        axis.title = element_text(color = "white", family = "DejaVu Serif"),
+        plot.background = element_rect(fill = "#4C4C4C"),
+        panel.background = element_rect(fill = "#4C4C4C"),
+        plot.caption = element_text(color = "white", family = "DejaVu Serif"))
+
+ggsave(here("plots", "2020_49", "Toronto_shelters.png"), 
+       width = 12, height = 6, scale = 1, dpi = 300, units = "in")
+
+```
+
