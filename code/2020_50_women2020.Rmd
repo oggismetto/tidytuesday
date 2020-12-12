@@ -1,0 +1,106 @@
+---
+title: "Toronto Shelters"
+author: "oggismetto"
+date: "01/12/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+theme_set(theme_light())
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(scales)
+library(moderndive)
+library(lubridate)
+library(ggimage)
+
+#1  Get the Data
+tuesdata <- tidytuesdayR::tt_load(2020, week = 50)
+
+women <- tuesdata$women
+```
+
+* old idea
+
+```{r}
+install.packages("ggalluvial")
+library(ggalluvial)
+
+women_clean <- women %>%
+  mutate(country = str_replace(string = country, pattern = " ", replacement = ""),
+         country = str_replace(string = country, pattern = "Somaliland", replacement = "Somalia"),
+         role = str_replace(string = role, pattern = "Human-rights activist", 
+                            replacement = "Human rights activist"),
+         role = str_replace(string = role, pattern = "Social-justice activist", 
+                            replacement = "Social justice activist"),
+         role = str_replace(string = role, pattern = "Scientist and inventor", replacement = "Scientist"),
+         role = str_replace(string = role, pattern = "Scientist/astronaut", replacement = "Scientist"),
+         role = str_replace(string = role, pattern = "Actor", replacement = "Actress"),
+         role = str_replace(string = role, pattern = "Writer and film-maker", replacement = "Writer"),
+         role = str_replace(string = role, pattern = "Writer/illustrator", replacement = "Writer")) %>%
+  select(img, category)
+
+
+women_clean %>%
+  filter(!category == "All") %>%
+  count(category, country, role, sort = T) %>%
+  ggplot(aes(axis1 = category, axis2 = role, axis3 = country,
+           y = n)) +
+  scale_x_discrete(limits = c("country", "role", "country"), expand = c(.2, .05)) +
+  xlab("Women") +
+  geom_alluvium(aes(fill = category)) +
+  geom_stratum() +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum))) +
+  ggtitle("passengers on the maiden voyage of the Titanic",
+          "stratified by demographics and survival") 
+
+```
+
+* new idea
+
+```{r}
+
+world <- map_data("world") %>%
+  filter(region != "Antarctica")
+
+set.seed(123)
+
+test <- women %>% 
+  select(country, img) %>%
+  mutate(country = str_replace(country, pattern = "US", replacement = "USA")) %>%
+  right_join(world, by = c("country" = "region")) %>%
+  group_by(img) %>%
+  sample_n(1) %>%
+  ungroup() %>%
+  distinct(long, lat, group, img) %>%
+  left_join(women_clean, by = "img") %>%
+  filter(!is.na(img))
+
+world %>%
+  ggplot(aes(long, lat, group = group)) +
+  geom_polygon(aes(fill = "#DC143C")) + 
+  theme_void() +
+  geom_image(data = test, aes(image = img, x = long, y = lat), size = 0.05) +
+  theme(legend.position = "none") +
+  labs(title = "Woman's World",
+       subtitle = "The top 100 inspiring and influential women of 2020 revealed by BBC",
+       x = "", y = "", fill = "",
+       caption = "by @GoldenB16117397 | source: TidyTuesday | Women of 2020") +
+  theme(panel.grid = element_blank(),
+        plot.margin = unit(rep(1, 4), "cm"),
+        plot.title.position = "plot", 
+        plot.title = element_text(color = "#DC143C", size = 24, face = "bold", family = "DejaVu Serif"),
+        plot.subtitle = element_text(color = "#DC143C", size = 16, family = "DejaVu Serif", margin = margin(b = 15)),
+        plot.caption = element_text(color = "#DC143C", family = "DejaVu Serif"))
+
+ggsave(here("plots", "2020_50", "Women2020.png"), 
+       width = 12, height = 7, scale = 1, dpi = 300, units = "in")
+
+```
+
+

@@ -44,7 +44,7 @@ by_organization <-
 by_organization %>%
   mutate(organization_name = fct_reorder(organization_name, ratio_occupancy)) %>%
   ggplot(aes(x= date, y = organization_name, fill = ratio_occupancy)) +
-  geom_tile(color = "white") +
+  geom_tile(color = "#4C4C4C") +
   scale_fill_gradient2(low = "green2", mid = "yellow", high = "red3", midpoint = 0.6, labels = percent_format())  +
   facet_wrap(~sector, nrow = 1) +
   labs(title = "Toronto Shelter Occupancy Over Time",
