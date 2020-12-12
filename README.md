@@ -11,7 +11,7 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
-### Year 2020 Episode 49: Woman’s World
+### Year 2020 Episode 50: Woman’s World
 
 ![women](plots/2020_50/Women2020.png)
 
