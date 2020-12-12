@@ -1,5 +1,5 @@
 ---
-title: "Toronto Shelters"
+title: "Women 2020"
 author: "oggismetto"
 date: "01/12/2020"
 output: html_document
@@ -99,7 +99,7 @@ world %>%
         plot.caption = element_text(color = "#DC143C", family = "DejaVu Serif"))
 
 ggsave(here("plots", "2020_50", "Women2020.png"), 
-       width = 12, height = 10, scale = 1, dpi = 300, units = "in")
+       width = 13, height = 10, scale = 1, dpi = 300, units = "in")
 
 ```
 
