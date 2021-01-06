@@ -38,17 +38,17 @@ transit_cost %>%
   ggplot() +
   geom_circle(aes(x0 = 1, y0 = 1, r = length, color = length), size = 0.4) +
   theme_void() +
-  scale_color_continuous(low = "white", high = "darkred") +
+  scale_color_continuous(low = "white", high = "#00203FFF") +
   labs(title = "358 Shades Of Transits",
        color = "Length (Km)",
        caption = "by @GoldenB16117397 | source: #TidyTuesday/Transit Costs Project") +
-  theme(panel.background = element_rect(fill = "grey13", colour = "grey13"),
-        plot.background = element_rect(fill = "grey13", colour = "grey13"),
-        legend.background = element_rect(fill = "grey13", colour = "grey13"),
-        plot.title = element_text(hjust = 0.5, size = 24, family = "Space Mono", colour = "white"),
-        plot.caption = element_text(size = 16, family = "Space Mono", colour = "white"),
-        legend.title = element_text(size = 16, family = "Space Mono", colour = "white"), 
-        legend.text =  element_text(size = 16, family = "Space Mono", colour = "white"))
+  theme(panel.background = element_rect(fill = "#ADEFD1FF", colour = "#ADEFD1FF"),
+        plot.background = element_rect(fill = "#ADEFD1FF", colour = "#ADEFD1FF"),
+        legend.background = element_rect(fill = "#ADEFD1FF", colour = "#ADEFD1FF"),
+        plot.title = element_text(hjust = 0.5, size = 24, family = "Space Mono", colour = "#00203FFF"),
+        plot.caption = element_text(size = 16, family = "Space Mono", colour = "#00203FFF"),
+        legend.title = element_text(size = 16, family = "Space Mono", colour = "#00203FFF"), 
+        legend.text =  element_text(size = 16, family = "Space Mono", colour = "#00203FFF"))
 
 ggsave(here("plots","2021_02", "Transits.png"), 
        width = 12, height = 8, scale  = 1, dpi = 310, units = 'in')
