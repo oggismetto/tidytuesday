@@ -1,0 +1,56 @@
+---
+title: "Transits 2021"
+author: "oggismetto"
+date: "06/01/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+theme_set(theme_light())
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(countrycode)
+library(ggforce)
+
+#1  Get the Data
+tt <- tidytuesdayR::tt_load(2021, week = 2)
+
+```
+
+```{r}
+
+# clean the data as drob does
+transit_cost <- tt$transit_cost %>%
+  filter(!is.na(e)) %>%
+  mutate_at(vars(start_year, end_year, real_cost), as.numeric) %>%
+  mutate(country_code = ifelse(country == "UK", "GB", country),
+         country = countrycode(country_code, "iso2c", "country.name"),
+         tunnel_per = tunnel / length,
+         rr = ifelse(rr, "Railroad", "Not Railroad"))
+
+transit_cost %>%
+  mutate(line = fct_reorder(line, length)) %>%
+  ggplot() +
+  geom_circle(aes(x0 = 1, y0 = 1, r = length, color = length), size = 0.4) +
+  theme_void() +
+  scale_color_continuous(low = "white", high = "darkred") +
+  labs(title = "358 Shades Of Transits",
+       color = "Length (Km)",
+       caption = "by @GoldenB16117397 | source: #TidyTuesday/Transit Costs Project") +
+  theme(panel.background = element_rect(fill = "grey13", colour = "grey13"),
+        plot.background = element_rect(fill = "grey13", colour = "grey13"),
+        legend.background = element_rect(fill = "grey13", colour = "grey13"),
+        plot.title = element_text(hjust = 0.5, size = 24, family = "Space Mono", colour = "white"),
+        plot.caption = element_text(size = 16, family = "Space Mono", colour = "white"),
+        legend.title = element_text(size = 16, family = "Space Mono", colour = "white"), 
+        legend.text =  element_text(size = 16, family = "Space Mono", colour = "white"))
+
+ggsave(here("plots","2021_02", "Transits.png"), 
+       width = 12, height = 8, scale  = 1, dpi = 310, units = 'in')
+
+```
