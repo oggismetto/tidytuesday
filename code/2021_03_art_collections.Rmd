@@ -1,0 +1,66 @@
+---
+title: "Art Collections"
+author: "oggismetto"
+date: "12/01/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+theme_set(theme_light())
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(countrycode)
+library(ggforce)
+
+#1  Get the Data
+tt <- tidytuesdayR::tt_load(2021, week = 3)
+
+```
+
+
+```{r}
+
+library(ggpie)
+
+artists <- tt$artists
+artworks <- tt$artwork
+
+artworks %>% View()
+artists %>% View()
+
+artists %>%
+  select(name, placeOfBirth) %>%
+  filter(!is.na(placeOfBirth)) %>%
+  separate(placeOfBirth, into = c("City", "Country"), sep = ", ", extra = "merge", fill = "left") %>%
+  separate(Country, into = c(NA, "Country"), sep = ", ", fill = "left") %>%
+  mutate(Country = fct_lump(Country, 10)) %>%
+  add_count(Country) %>%
+  mutate(Country = fct_reorder(Country, -n)) %>%
+  ggpie(Country, border.color="white", border.width=1.5,
+      label.color="white", label.size=4, offset=1.1,
+      title="Country Representation at TATE") +
+  labs(caption = "by @GoldenB16117397 | source: #TidyTuesday/TATE",
+       subtitle = "Top ten countries of birth of the artists present at TATE") +
+  scale_fill_viridis_d(direction = -1) +
+  theme_void() +
+        theme(plot.background = element_rect(color = "white"),
+        plot.title = element_text(hjust = 0.25, vjust = 3, size = 32, family = "Times New Roman", colour = "#00203FFF"),
+        plot.subtitle = element_text(hjust = 0.2, vjust = 3, size = 16, family = "Times New Roman", colour = "#00203FFF"),
+        plot.caption = element_text(size = 16, family = "Times New Roman", colour = "#00203FFF", hjust = 0.25),
+        legend.title = element_text(size = 16, family = "Times New Roman", colour = "#00203FFF"), 
+        legend.text =  element_text(size = 16, family = "Times New Roman", colour = "#00203FFF"),
+        plot.margin = margin(1,1,1,1, unit = "cm"))
+
+system2("mkdir",
+        args = "plots/2021_03")
+
+ggsave(here("plots", "2021_03", "TATE.png"), 
+            units = "in", dpi = 310, scale = 1, width = 8, height = 7)
+
+
+```
