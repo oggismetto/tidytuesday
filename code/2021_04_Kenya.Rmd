@@ -1,0 +1,93 @@
+---
+title: "Kenya"
+author: "oggismetto"
+date: "21/01/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+theme_set(theme_light())
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(ggimage)
+
+#1  Get the Data
+tt <- tidytuesdayR::tt_load(2021, week = 4)
+
+crops <- tt$crops
+
+```
+
+
+```{r}
+
+fruit_image <- tibble(
+url = c("https://danielmiessler.com/images/cupoftea1.png", "https://www.pellinicaffe.com/wp-content/uploads/2020/04/Pellini-Grani-600x600.png", "https://www.totalexotics.com/app/uploads/2019/05/Avocado@2x.png", "https://californiacitrusthreat.org/wp-content/themes/citrus/images/bg-citrus-white.png", "https://www.darlinggroup.co.nz/wp-content/uploads/MANGO-w-SHADOW-610x762px.png", "https://res.cloudinary.com/hksqkdlah/image/upload/c_fill,dpr_auto,f_auto,fl_lossy,q_auto,w_auto/28285_sil-coconutproducts-cracked-05", "https://www.bluemountainorganics.com/pub/media/catalog/product/cache/0e776ddb0f142916b2c3deefdc6c24d0/b/t/btr_macadamia_nuts.png", "https://valothakbo.com/wp-content/uploads/2020/08/kazu-badam-cashew-nut-1kg.png",  "https://knehnav.home.xs4all.nl/khattaktrans3.gif"), fruit_name = c("Tea", "Coffee", "Avocado", "Citrus", "Mango", "Coconut", "Macadamia", "Cashew Nut", "Khat (Miraa)"))
+
+fruits %>%
+  group_by(crop) %>%
+  summarize(median = median(households)) %>%
+  arrange(-median)
+
+fruits <- crops %>%
+  pivot_longer(cols = c(-Farming, -SubCounty),
+               names_to = "crop", values_to = "households") %>%
+  filter(!is.na(households),
+         SubCounty != "KENYA") %>%
+  left_join(fruit_image, by = c("crop" = "fruit_name")) 
+
+addon <- tibble(x_add = rnorm(191, 0.5, 0.1),
+       y_add = rnorm(191, 0.5, 0.1))
+
+fruits %>%
+  distinct(crop) %>%
+  mutate(number = case_when(crop == "Avocado" ~ 1,
+                            crop == "Khat (Miraa)" ~2,
+                            crop == "Tea" ~ 3,
+                            crop == "Coffee" ~ 4,
+                            crop == "Mango" ~ 5,
+                            crop == "Cashew Nut" ~ 6,
+                            crop == "Coconut" ~ 7,
+                            crop == "Citrus" ~ 8,
+                            crop == "Macadamia" ~ 9)) %>%
+  inner_join(fruits) %>%
+  bind_cols(addon) %>%
+  ggplot(aes(x = number + x_add, y = households + y_add, group = number)) +
+  geom_point() +
+  geom_image(aes(image = url), size = 0.04, alpha = 0.6) +
+  geom_boxplot(alpha = 0) +
+  theme_minimal() +
+  labs(title = "Crops In Kenya: Avocado rules!", 
+       subtitle = "Kenya is the world's third largest producer of avocados. Avocado is also Kenya's leading \nfruit export, accounting for nearly one-fifth of its total horticultural exports (www.ifpri.org)",
+       x = "Crops", y = "Households", 
+       caption = "by @GoldenB16117397 | source: #TidyTuesday/Kenya Census") +
+  scale_y_log10(labels = scales::comma) +
+  scale_x_continuous(breaks = c(1:9), labels = c("Avocado","Khat (Miraa)","Tea","Coffee","Mango","Cashew Nut", "Coconut","Citrus", "Macadamia")) +
+  theme(axis.text.x.bottom = element_text(hjust = 0, angle = 45, vjust = 0.2, size = 22, 
+                                          family = "Times New Roman"),
+        axis.text.y.left = element_text(hjust = 0, size = 22, family = "Times New Roman"),
+        axis.title.x = element_text(size = 26, face = "bold", margin = margin(15,1,1,1), 
+                                    family = "Times New Roman"),
+        axis.title.y.left = element_text(size = 26, face = "bold", family = "Times New Roman",
+                                         margin = margin(1,15,1,1)),
+        plot.background = element_rect(color = "white"),
+        plot.title.position = "plot",
+        plot.title = element_text(vjust = 5, size = 44, family = "Times New Roman"),
+        plot.subtitle = element_text(vjust = 5, size = 26, family = "Times New Roman"),
+        plot.caption = element_text(size = 16, family = "Times New Roman", hjust = 1.1, vjust = -4),
+        plot.margin = margin(2, 2, 1, 2, "cm"))
+
+
+system2("mkdir",
+        args = "plots/2021_04")
+
+ggsave(here("plots", "2021_04", "kenya_census.png"), 
+            units = "in", dpi = 310, scale = 1, width = 14, height = 11)
+
+```

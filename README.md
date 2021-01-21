@@ -11,6 +11,10 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2021 Episode 04: Kenya Census
+
+![Transits](plots/2021_04/kenya_census.png)
+
 ### Year 2021 Episode 03: TATE
 
 ![Transits](plots/2021_03/TATE.png)
