@@ -11,6 +11,10 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2021 Episode 05: HCBU Enrollement
+
+![Transits](plots/2021_06/hbcu.png)
+
 ### Year 2021 Episode 05: Plastic Pollution
 
 ![Transits](plots/2021_05/plastic.png)

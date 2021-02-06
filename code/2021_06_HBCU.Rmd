@@ -1,0 +1,51 @@
+---
+title: "HBCU"
+author: "oggismetto"
+date: "01/02/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+theme_set(theme_light())
+
+library(tidyverse)
+library(tidytuesdayR)
+
+#1  Get the Data
+tt <- tidytuesdayR::tt_load(2021, week = 6)
+```
+
+```{r}
+
+# lets create a list
+hbcu_all <- tt$hbcu_all
+
+dir.create("/scratch/git/tidytuesday/plots/2021_06/")
+
+hbcu_all %>%
+  pivot_longer(-Year) %>%
+  mutate(type = case_when(name %in% c("Males", "Females") ~ "Sex",
+                          str_detect(name, "Public") ~ "Public",
+                          str_detect(name, "Private") ~ "Private")) %>%
+  filter(!is.na(type),
+         !str_detect(name, "Total")) %>%
+  ggplot(aes(x = Year, y = value, fill = name)) +
+  facet_wrap(~type, nrow = 1) +
+  geom_area() +
+  labs(title = "Enrollment at Historically Black colleges and Universities HBCU", 
+       caption = "by @GoldenB16117397 | source: #TidyTuesday/HBCU",
+       fill = "") +
+  scale_y_comma() +
+  ggthemes::theme_economist() +
+  theme(plot.title = element_text(size = 20)) +
+  ggsave(filename = "/scratch/git/tidytuesday/plots/2021_06/hbcu.png", width = 25, height = 14, scale = 1, units = "cm", dpi = 300)
+
+```
+
+
+
+
