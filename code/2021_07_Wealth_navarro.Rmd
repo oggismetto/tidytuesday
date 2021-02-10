@@ -1,0 +1,52 @@
+---
+title: "Kenya"
+author: "oggismetto"
+date: "21/01/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(tidytext)
+library(ggtext)
+
+#1  Get the Data
+tt <- tidytuesdayR::tt_load(2021, week = 7)
+
+tt$income_aggregate
+tt$income_distribution  
+tt$income_limits
+tt$income_mean
+tt$lifetime_earn
+tt$lifetime_wealth
+
+lifetime_earn <- tt$lifetime_earn
+
+lifetime_earn$lifetime_earn <- ifelse(lifetime_earn$gender == "Men", -1*lifetime_earn$lifetime_earn, lifetime_earn$lifetime_earn)
+
+ggplot(lifetime_earn, aes(x = race, y = lifetime_earn)) +
+  geom_bar(data = dplyr::filter(lifetime_earn, gender == "Men"), stat = "identity", fill = "#383F33", alpha = 0.95) + 
+  geom_bar(data = dplyr::filter(lifetime_earn, gender == "Women"), stat = "identity", fill = "#D5D9C0", alpha = 0.95) +
+  coord_flip() +
+  labs(title = "AVERAGE LIFETIME EARNING ($)", 
+       subtitle = "BY RACE AND GENDER FOR <span style='color:#383F33;'>MEN </span> AND <span style='color:#D5D9C0;'>WOMEN </span>",x="", y="", caption = "by @GoldenB16117397 | source: #TidyTuesday/Wealth")+
+  theme_minimal() +
+  scale_y_continuous(labels = c("2M", "0", "1M"), breaks = c(-2000000,0,1000000)) +
+  theme(panel.background = element_rect(fill = "#6F745B", color = "NA"),
+        plot.background = element_rect(fill = "#6F745B", color = "NA"),
+        panel.grid = element_blank(),
+        plot.title = element_markdown(hjust = 0.5, face = "bold", size =32, color = "grey", margin = margin(0,0,20,0)), 
+        plot.subtitle = element_markdown(hjust = 0.5, face = "bold", size =18, color = "grey", margin = margin(0,0,20,0)),
+        plot.caption = element_text(color = "grey"),
+        axis.text = element_text(size = 16, color = "grey")) +
+  ggsave(filename = "/scratch/git/tidytuesday/plots/2021_07/wealth.png", width = 25, height = 14, scale = 1, units = "cm", dpi = 300)
+
+```
+

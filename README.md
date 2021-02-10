@@ -14,6 +14,7 @@ the last one in time.
 ### Year 2021 Episode 07: Wealth
 
 ![Transits](plots/2021_07/income.png)
+![Transits](plots/2021_07/wealth.png)
 
 ### Year 2021 Episode 06: HCBU Enrollement
 
