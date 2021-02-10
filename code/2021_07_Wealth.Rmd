@@ -1,0 +1,124 @@
+---
+title: "Kenya"
+author: "oggismetto"
+date: "21/01/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidytuesdayR)
+library(tidyverse)
+library(cowplot)
+library(ggstream)
+theme_set(theme_light())
+
+dir.create("/scratch/git/tidytuesday/plots/2021_07/")
+
+#1  Get the Data
+tt <- tidytuesdayR::tt_load(2021, week = 7)
+
+tt$income_aggregate
+tt$income_distribution  
+tt$income_limits
+tt$income_mean
+tt$lifetime_earn
+tt$lifetime_wealth
+
+
+income_limits <- tt$income_limits
+
+income_limits %>% filter(dollar_type == "Current Dollars") %>%
+  distinct(year, race, income_quintile, income_dollars) %>%
+  filter(race != "All Races",
+         ! race %in% c("White, Not Hispanic", 
+                       "Asian Alone or in Combination", 
+                       "Black Alone or in Combination")) -> income_limits_filt
+
+income_limits_filt$income_quintile <- 
+  factor(income_limits_filt$income_quintile, levels = c("Lowest", "Second", "Third", "Fourth", "Top 5%"))
+
+plot2 <-
+  income_limits_filt %>%
+#  filter(income_quintile == "Second") %>%
+  ggplot(aes(year, income_dollars, fill = race, label = race, color = race)) +
+    geom_stream(extra_span = 0.013, type = "mirror", n_grid = 3000, bw = .78) +
+#    geom_stream_label(size = 4, type = "mirror", n_grid = 1000) +
+  cowplot::theme_minimal_vgrid(font_size = 18) +
+  theme(legend.position = "none") +
+  scale_colour_manual(values = c("#383F33", "#6F745B", "#D5D9C0")) +
+  scale_fill_manual(values = c("#383F33", "#6F745B", "#D5D9C0")) +
+  labs(x = "",
+       y = "") +
+  facet_wrap(~income_quintile, nrow = 1) +
+  scale_y_continuous(labels = scales::dollar_format(), limits = c(-400000,400000)) +
+                     #labels = c("400K", "40K", "0", "40K", "400K"), 
+                     #breaks = c(-400000, -40000,0,40000, 400000)) +
+  theme(panel.background = element_rect(fill = "white", color = "NA"),
+        plot.background = element_rect(fill = "white", color = "NA"),
+        panel.grid = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.y = element_text(color = "black", family = "Purisa"),
+        axis.text = element_text(color = "black", family = "Purisa"),
+        strip.text = element_text(color = "black", family = "Purisa"),
+        axis.ticks.x = element_blank()) +
+  theme(plot.margin = margin(1, 100,1, 1))
+
+```
+
+
+
+```{r}
+
+
+ggdraw() +
+  draw_text("by @GoldenB16117397 | source: #TidyTuesday/Wealth",
+            size = 10, x = 0.35, y = 0.2, hjust = 0,
+            color = "black", family = "Purisa") -> caption
+
+ggdraw() +
+  draw_text("Familial income limits for each fifth by year and race",
+            size = 21,
+            color = "black", family = "Purisa") -> title
+ggdraw() +
+  draw_text("in current dollars in the US 1967-2019",
+            size = 14,
+            color = "black", family = "Purisa") -> subtitle
+
+titular <- plot_grid(title, subtitle, ncol=1)
+#row of plots
+#row_plots <- plot_grid(plot2, ncol=1)
+
+#all together
+final_plot <- plot_grid(
+  titular,
+  plot2,
+  caption,
+  ## plot settings
+  rel_heights = c(1.2,2,0.5),
+  nrow = 3,
+  ncol = 1
+) +
+  theme(plot.background = element_rect(fill = "white", colour = NA)) +
+  draw_text("White Alone",
+            size = 10, x = 0.89, y = 0.32, hjust = 0,
+            color = "black", family = "Purisa") +
+  draw_text("Hispanic",
+            size = 10, x = 0.89, y = 0.43, hjust = 0,
+            color = "black", family = "Purisa")+
+  draw_text("Black Alone",
+            size = 10, x = 0.89, y = 0.52, hjust = 0,
+            color = "black", family = "Purisa")
+
+#saving
+ggsave("/scratch/git/tidytuesday/plots/2021_07/income.png", 
+       final_plot, 
+       height = 6, width = 9, 
+       units = "in", dpi = 300)
+
+```
+

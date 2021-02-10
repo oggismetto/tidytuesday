@@ -11,7 +11,11 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
-### Year 2021 Episode 05: HCBU Enrollement
+### Year 2021 Episode 07: Wealth
+
+![Transits](plots/2021_07/income.png)
+
+### Year 2021 Episode 06: HCBU Enrollement
 
 ![Transits](plots/2021_06/hbcu.png)
 
