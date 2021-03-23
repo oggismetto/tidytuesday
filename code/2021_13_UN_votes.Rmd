@@ -55,33 +55,4 @@ ggsave("/scratch/git/tidytuesday/plots/2021_13/un_plot.jpg",
 
 ```
 
-* statistical problem.
-was 1982 the most problematic year?
-Ho: all years were equalli problematic
-Ha: 1982 was the most problematic year
-Ho: 1982 had the highest proportion of calls
-
-```{r}
-
-library(infer)
-
-# prepare the dataset
-test <- roll_calls %>%
-  select(year)
-
-roll_calls %>% 
-  count(year, sort = T)
-
-x_bar <- 207
-
-null_dist_calls <- roll_calls %>% 
-  count(year) %>%
-  specify(response = n) %>%
-  generate(reps = 1000, type = "bootstrap") %>%
-  calculate(stat = "mean")
-
-visualize(null_dist_calls, obs_stat = x_bar)
-
-```
-
 
