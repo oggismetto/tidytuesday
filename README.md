@@ -11,6 +11,10 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2021 Episode 13: UN votes
+
+![Transits](plots/2021_13/un_plot.jpg)
+
 ### Year 2021 Episode 07: Wealth
 
 ![Transits](plots/2021_07/income.png)

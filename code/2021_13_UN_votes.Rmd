@@ -1,0 +1,87 @@
+---
+title: "Kenya"
+author: "oggismetto"
+date: "21/01/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(tidytext)
+library(ggtext)
+library(lubridate)
+
+theme_set(theme_light())
+dir.create("/scratch/git/tidytuesday/plots/2021_13/")
+
+#1  Get the Data
+tt <- tidytuesdayR::tt_load(2021, week = 13)
+un_votes <- tt$unvotes
+issues <- tt$issues
+
+roll_calls <- tt$roll_calls %>% 
+  mutate(year = year(date)) %>%
+  left_join(issues)
+
+roll_calls %>%
+  group_by(year) %>%
+  summarize(n = n()) %>%
+  ggplot(aes(x = year, y = n)) +
+  geom_line()
+  
+un_plot <- roll_calls %>%
+  filter(!is.na(issue)) %>%
+  count(year, issue, sort = T) %>%
+  arrange(year) %>%
+  ggplot(aes(x = year, y = n)) +
+  geom_col(aes(fill = issue)) +
+  geom_line(aes(x = year, y = n), color = "black", data = roll_calls %>% count(year)) +
+  ggthemes::theme_wsj() +
+  ggthemes::scale_fill_ptol() +
+  labs(title = "United Nations calls over time",
+       subtitle = "Coloured bars show the number of topics for which the issue was annotated")
+
+#saving
+ggsave("/scratch/git/tidytuesday/plots/2021_13/un_plot.jpg", 
+       un_plot, 
+       height = 5, width = 16, 
+       units = "in", dpi = 300)
+
+```
+
+* statistical problem.
+was 1982 the most problematic year?
+Ho: all years were equalli problematic
+Ha: 1982 was the most problematic year
+Ho: 1982 had the highest proportion of calls
+
+```{r}
+
+library(infer)
+
+# prepare the dataset
+test <- roll_calls %>%
+  select(year)
+
+roll_calls %>% 
+  count(year, sort = T)
+
+x_bar <- 207
+
+null_dist_calls <- roll_calls %>% 
+  count(year) %>%
+  specify(response = n) %>%
+  generate(reps = 1000, type = "bootstrap") %>%
+  calculate(stat = "mean")
+
+visualize(null_dist_calls, obs_stat = x_bar)
+
+```
+
+
