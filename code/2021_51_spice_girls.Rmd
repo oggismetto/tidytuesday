@@ -1,7 +1,7 @@
 ---
-title: "Kenya"
+title: "Spice Girls"
 author: "oggismetto"
-date: "21/01/2020"
+date: "14/12/2021"
 output: html_document
 editor_options: 
   chunk_output_type: console
@@ -29,8 +29,6 @@ studio_album_tracks <- tuesdata$studio_album_tracks
 
 ```{r}
 
-
-  
 studio_album_tracks_normalized <- 
   studio_album_tracks %>%
   select(track_name, danceability:tempo, -c(key, mode)) %>%
@@ -47,9 +45,6 @@ correlations <- tibble(danceability  = cor(studio_album_tracks_normalized$valenc
                        liveness  = cor(studio_album_tracks_normalized$valence, studio_album_tracks_normalized$liveness),
                        tempo  = cor(studio_album_tracks_normalized$valence, studio_album_tracks_normalized$tempo)) %>%
   pivot_longer(everything()) %>% rename(cor = value) %>% mutate(cor = round(cor, 2))
-
-correlations %>% 
-  mutate(name = factor(name, levels = c("danceability", "energy", "instrumentalness", "speechiness", "loudness", "tempo", "liveness")))
 
 studio_album_tracks_normalized %>%
   pivot_longer(c(danceability:liveness, tempo)) %>%
