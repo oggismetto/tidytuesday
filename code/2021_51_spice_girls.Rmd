@@ -1,0 +1,75 @@
+---
+title: "Kenya"
+author: "oggismetto"
+date: "21/01/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(here)
+library(tidytuesdayR)
+library(tidytext)
+library(ggtext)
+library(lubridate)
+
+theme_set(theme_light())
+dir.create("/scratch/git/tidytuesday/plots/2021_51/")
+
+#1  Get the Data
+tuesdata <- tidytuesdayR::tt_load('2021-12-14')
+studio_album_tracks <- tuesdata$studio_album_tracks
+
+```
+
+```{r}
+
+
+  
+studio_album_tracks_normalized <- 
+  studio_album_tracks %>%
+  select(track_name, danceability:tempo, -c(key, mode)) %>%
+  column_to_rownames("track_name") %>%
+  scale(.) %>%
+  as_data_frame()
+
+
+correlations <- tibble(danceability  = cor(studio_album_tracks_normalized$valence, studio_album_tracks_normalized$danceability),
+                       energy  = cor(studio_album_tracks_normalized$valence, studio_album_tracks_normalized$energy),
+                       loudness  = cor(studio_album_tracks_normalized$valence, studio_album_tracks_normalized$loudness),
+                       speechiness = cor(studio_album_tracks_normalized$valence, studio_album_tracks_normalized$speechiness),
+                       instrumentalness  = cor(studio_album_tracks_normalized$valence, studio_album_tracks_normalized$instrumentalness),
+                       liveness  = cor(studio_album_tracks_normalized$valence, studio_album_tracks_normalized$liveness),
+                       tempo  = cor(studio_album_tracks_normalized$valence, studio_album_tracks_normalized$tempo)) %>%
+  pivot_longer(everything()) %>% rename(cor = value) %>% mutate(cor = round(cor, 2))
+
+correlations %>% 
+  mutate(name = factor(name, levels = c("danceability", "energy", "instrumentalness", "speechiness", "loudness", "tempo", "liveness")))
+
+studio_album_tracks_normalized %>%
+  pivot_longer(c(danceability:liveness, tempo)) %>%
+  inner_join(correlations, by = "name") %>%
+  mutate(name = factor(name, levels = c("danceability", "energy", "instrumentalness", "speechiness", "loudness", "tempo", "liveness"))) %>%
+  ggplot(aes(x = valence, y = value, color = name)) +
+  geom_point() +
+  geom_text(aes(x = 0, y = 3, label = cor, hjust = 0, vjust = 0, family = "Purisa"),size = 5) +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~name, nrow = 1) +
+  labs(title = "Valence correlated with all Spotify metrics for Spice Girls tracks",
+       subtitle = "Valence is a measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track",
+       x = "", y = "") +
+  theme(legend.position = "none",
+        title = element_text(family = "Purisa", face = "bold", size = 18),
+        strip.background = element_rect(fill = "#1DB954"),
+        strip.text = element_text(color = "#191414", face = "bold", size = 15, family = "Purisa"),
+        plot.background = element_rect(fill = "#1DB954"),
+        panel.background = element_rect(fill = "#191414"),
+        panel.grid = element_line(size = 0.1))
+
+```
+
