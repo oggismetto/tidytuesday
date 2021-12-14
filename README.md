@@ -1,38 +1,18 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-Tidytuesday 😄
-=============
 
-My weekly commits for the tidytuesday project (<a href="https://github.com/rfordatascience/tidytuesday/" class="uri">https://github.com/rfordatascience/tidytuesday/</a>)
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Tidytuesday 😄
 
-### Year 2021 Episode 13: UN votes
+## My weekly commits for the tidytuesday project (<https://github.com/rfordatascience/tidytuesday/>)
 
-![Transits](plots/2021_13/un_plot.jpg)
+I’ve discovered this challenge during another challenge :) the
+#100DaysOfCode challenge. i’ve started during March 2020 quarantine for
+covid19. Hope one day will look back at these days and find a reason to
+smile and be happy about what i’ve accomplished. The list starts from
+the last one in time.
 
-### Year 2021 Episode 07: Wealth
+### Year 2021 Episode 51: Spice Girls
 
-![Transits](plots/2021_07/income.png)
-![Transits](plots/2021_07/wealth.png)
-
-### Year 2021 Episode 06: HCBU Enrollement
-
-![Transits](plots/2021_06/hbcu.png)
-
-### Year 2021 Episode 05: Plastic Pollution
-
-![Transits](plots/2021_05/plastic.png)
-
-### Year 2021 Episode 04: Kenya Census
-
-![Transits](plots/2021_04/kenya_census.png)
-
-### Year 2021 Episode 03: TATE
-
-![Transits](plots/2021_03/TATE.png)
-
-### Year 2021 Episode 02: Transit Costs
-
-![Transits](plots/2021_02/Transits.png)
+![spice](plots/2021_51/test.png)
 
 ### Year 2020 Episode 50: Woman’s World
 
@@ -86,7 +66,7 @@ X-men
 \* learned using geom\_edge\_fan (pretty useful for the future)  
 \* learned using magick to set an image as plot background, fun no?
 
-![Uncanny X-men](plots/2020_27/xmen.png) \#\#\# Year 2020 Episode 26:
+![Uncanny X-men](plots/2020_27/xmen.png) ### Year 2020 Episode 26:
 Caribou tracking  
 i found myself unable to face this
 
@@ -214,7 +194,7 @@ communication
 So im showing here the main (obvious?) message extracted from the
 data.  
 **important**: I’ve read the code of i think about the ~80% of the
-\#tidytuesday plots i’ve seen. That was so instructive.
+#tidytuesday plots i’ve seen. That was so instructive.
 
 ![BBC - Survey - HipHop -
 followup](plots/2020_16/16_2020_HiphopBBC_followup.png)

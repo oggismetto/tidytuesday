@@ -71,5 +71,7 @@ studio_album_tracks_normalized %>%
         panel.background = element_rect(fill = "#191414"),
         panel.grid = element_line(size = 0.1))
 
+ggsave(filename = "/scratch/git/tidytuesday/plots/2021_51/test.png", width = 40, height = 10, dpi = 300, units = "cm")
+
 ```
 
