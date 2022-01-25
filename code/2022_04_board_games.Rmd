@@ -1,0 +1,64 @@
+---
+title: "Board games"
+author: "oggismetto"
+date: "25/01/2022"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(tidytuesdayR)
+library(gt)
+library(gtExtras)
+library(kableExtra)
+
+
+theme_set(theme_light())
+dir.create(here("plots", "2022_04"))
+
+#1  Get the Data
+tuesdata <- tidytuesdayR::tt_load('2022-01-25')
+bg_det <- tuesdata$details
+bg_rat <- tuesdata$ratings
+
+# Get highly ranked games
+df2 <- bg_rat %>% 
+  group_by(year) %>% 
+  filter(users_rated > 1000) %>%
+  arrange(desc(average)) %>%
+  filter(year %in% c(2021)) %>%
+  slice(1:10) %>% inner_join(bg_det, by = c("name" = "primary")) %>%
+  mutate(players = paste0(minplayers, "-", maxplayers)) %>%
+  select(year, name, thumbnail, rating = average, players, maxplayers, users_rated)
+  
+
+# {gt} table
+df2 %>%
+  gt() %>%
+  gt_theme_espn() %>%
+  gt_img_rows(thumbnail, height = 50) %>%
+  cols_align(align = "center", 
+             columns = c("rating", "players")) %>%
+  gt_plt_bar(column=users_rated, 
+             color="darkgrey",
+             width=30) %>%
+  gt_plt_bar(column=maxplayers, 
+             color="darkgrey",
+             width=30) %>%
+  gt_color_rows(columns = "rating",
+                palette = "ggsci::amber_material") %>%
+  cols_label(name = html("Game name"),
+             users_rated=html("N reviewed"),
+             thumbnail = html("")) %>%
+  tab_header(title=md("<span style='color:#411d13'>Ratings of Board Games during last year of pandemic </span>"),
+             subtitle=md("Summary table of ratings of 2020 and 2021 board games")) %>%
+  tab_source_note(source_note = gt::html("<br>#TidyTuesday Week 4  |  Data source: Kaggle")) %>% 
+  gtsave("/scratch/git/tidytuesday/plots/2022_04/bg.png")
+
+```
+

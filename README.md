@@ -10,6 +10,10 @@ covid19. Hope one day will look back at these days and find a reason to
 smile and be happy about what i’ve accomplished. The list starts from
 the last one in time.
 
+### Year 2022 Episode 04: Board Games
+
+![bg](plots/2022_04/bg.png)
+
 ### Year 2021 Episode 51: Spice Girls
 
 ![spice](plots/2021_51/test.png)
