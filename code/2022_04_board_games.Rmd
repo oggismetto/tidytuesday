@@ -56,7 +56,7 @@ df2 %>%
              users_rated=html("N reviewed"),
              thumbnail = html("")) %>%
   tab_header(title=md("<span style='color:#411d13'>Ratings of Board Games during last year of pandemic </span>"),
-             subtitle=md("Summary table of ratings of 2020 and 2021 board games")) %>%
+             subtitle=md("Summary table of ratings of 2021 board games")) %>%
   tab_source_note(source_note = gt::html("<br>#TidyTuesday Week 4  |  Data source: Kaggle")) %>% 
   gtsave("/scratch/git/tidytuesday/plots/2022_04/bg.png")
 
